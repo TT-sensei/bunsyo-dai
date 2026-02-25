@@ -5,30 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>冒険の拠点 - 算数クエスト</title>
     <style>
+        /* ===================================
+           全体デザイン
+        ==================================== */
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #e8f5e9; color: #333; margin: 0; padding-bottom: 50px; text-align: center; }
         .app-title { color: #2e7d32; font-size: 2rem; margin: 15px 0; text-shadow: 2px 2px 0px #fff; }
         .status-bar { background-color: #3e2723; color: #fff; padding: 15px; display: flex; justify-content: space-around; font-size: 1.2rem; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-radius: 10px; margin: 0 10px; }
         .title-text { color: #ffd54f; font-size: 0.9em; margin-left: 5px; }
         #main-content { margin: 20px auto; max-width: 650px; padding: 0 10px; }
+        
         button { font-weight: bold; padding: 12px 18px; margin: 8px; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,0.2); transition: transform 0.1s; }
         button:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0); }
+        .hidden { display: none !important; }
+
+        /* 学年選択エリア */
+        .grade-section { background-color: #fff8e1; padding: 20px; border-radius: 10px; border: 4px solid #8d6e63; margin-bottom: 30px; }
+        .grade-btn { font-size: 1.4rem; width: 90%; padding: 15px; margin: 10px auto; display: block; color: white; border: 2px solid rgba(255,255,255,0.5); }
+        .grade-1 { background-color: #66bb6a; } /* 🌱 1年 */
+        .grade-2 { background-color: #43a047; } /* 🌿 2年 */
+        .grade-3 { background-color: #2e7d32; } /* 🌳 3年 */
+
+        /* サブメニュー（展開時） */
+        .sub-menu { background-color: rgba(255,255,255,0.8); border-radius: 8px; padding: 15px; margin: 10px auto; width: 85%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); border: 2px dashed #8d6e63; }
+        .sub-menu h3 { margin-top: 0; color: #3e2723; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
         
-        .quest-section { background-color: #fff8e1; padding: 20px; border-radius: 10px; border: 4px solid #8d6e63; margin-bottom: 30px; }
-        .quest-btn { color: white; font-size: 1.1rem; width: 90%; padding: 15px; margin: 8px auto; display: block; }
-        .btn-food { background-color: #e53935; }
-        .btn-shop { background-color: #fb8c00; }
-        .btn-ride { background-color: #1e88e5; }
-        .btn-present { background-color: #8e24aa; }
-        .btn-cave { background-color: #424242; border: 2px dashed #ffeb3b; color: #ffeb3b; }
+        .btn-story { background-color: #fbc02d; color: #3e2723; width: 90%; font-size: 1.2rem; }
+        .btn-cave { background-color: #424242; color: #ffeb3b; width: 90%; font-size: 1.1rem; border: 2px dashed #ffeb3b; }
         
+        .training-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 15px; }
+        .btn-train { background-color: #0288d1; color: white; font-size: 1rem; padding: 10px; margin: 0; }
+
+        /* ガチャ・図鑑エリア */
         .gacha-section { background-color: #fce4ec; padding: 20px; border-radius: 10px; border: 4px dashed #f06292; margin-bottom: 30px; }
         .btn-gacha-play { background-color: #e53935; color: white; font-size: 1.3rem; padding: 15px 30px; }
         .gacha-display-area { font-size: 4rem; margin: 10px 0; min-height: 80px; }
+        
+        .adventure-note { background-color: #fff3e0; padding: 20px; border-radius: 5px 15px 15px 5px; border-left: 15px solid #795548; border-top: 2px solid #8d6e63; border-right: 2px solid #8d6e63; border-bottom: 2px solid #8d6e63; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); }
+        .collection-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .collection-item { font-size: 2.5rem; background: #fff; border: 1px solid #d7ccc8; border-radius: 5px; padding: 10px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
+        .collection-unknown { color: #e0e0e0; font-size: 2rem; display: flex; align-items: center; justify-content: center; height: 100%; }
         .message-area { font-size: 1.2em; font-weight: bold; margin-top: 10px; min-height: 1.5em; }
     </style>
 </head>
 <body>
+
     <h1 class="app-title">⚔️ 算数クエスト ⚔️</h1>
+
     <header id="status-bar" class="status-bar">
         <div>🌟 Lv: <span id="disp-level">1</span> <span id="disp-title" class="title-text">（みならい）</span></div>
         <div>⚔️ EXP: <span id="disp-exp">0</span>/5</div>
@@ -36,32 +58,88 @@
     </header>
 
     <main id="main-content">
-        <section class="quest-section">
-            <h2 style="color: #3e2723; margin-top: 0;">🗺️ どこへ ぼうけんに でる？</h2>
-            <button class="quest-btn btn-food" onclick="goToQuest('quest.html')">🍎 たべものの森（あわせる・わける）</button>
-            <button class="quest-btn btn-shop" onclick="goToQuest('quest.html')">🏪 おみせの村（おかいもの）</button>
-            <button class="quest-btn btn-ride" onclick="goToQuest('quest.html')">🚃 のりものの町（時間・きょり）</button>
-            <button class="quest-btn btn-present" onclick="goToQuest('quest.html')">🎁 プレゼントの城（ぎゃくさん）</button>
+
+        <section class="grade-section">
+            <h2 style="color: #3e2723; margin-top: 0;">🗺️ どのレベルに ちょうせんする？</h2>
             
-            <hr style="border: 1px dashed #8d6e63; margin: 20px 0;">
-            <p style="font-size: 0.9rem; margin: 0; color: #616161;">まちがえた問題が あつまる ばしょ…</p>
-            <button class="quest-btn btn-cave" onclick="alert('修行の洞窟へ！(今回はテスト用です)')">🕳️ 修行の洞窟（ニガテこくふく）</button>
+            <button class="grade-btn grade-1" onclick="toggleMenu('menu-grade1')">🌱 1年生（たしざん・ひきざん）</button>
+            <div id="menu-grade1" class="sub-menu hidden">
+                <h3>🌱 1年生のぼうけん</h3>
+                <p style="font-size:0.8rem; color:#666;">いろんな問題がまざって出てくるぞ！</p>
+                <button class="btn-story" onclick="goToQuest('quest.html?grade=1&mode=story')">⚔️ ストーリークエスト (基本)</button>
+                
+                <h4 style="margin: 15px 0 5px 0; color:#0288d1;">🎯 訓練場（ニガテとっくん）</h4>
+                <div class="training-grid">
+                    <button class="btn-train" onclick="goToQuest('quest.html?grade=1&mode=train_add')">＋ たしざん</button>
+                    <button class="btn-train" onclick="goToQuest('quest.html?grade=1&mode=train_sub')">－ ひきざん</button>
+                </div>
+                
+                <h4 style="margin: 15px 0 5px 0; color:#424242;">🕳 修行の洞くつ（まちがい直し）</h4>
+                <button class="btn-cave" onclick="goToQuest('quest.html?grade=1&mode=cave')">🕳 まちがえた問題をやりなおす</button>
+            </div>
+
+            <button class="grade-btn grade-2" onclick="toggleMenu('menu-grade2')">🌿 2年生（＋ かけざん）</button>
+            <div id="menu-grade2" class="sub-menu hidden">
+                <h3>🌿 2年生のぼうけん</h3>
+                <button class="btn-story" onclick="goToQuest('quest.html?grade=2&mode=story')">⚔️ ストーリークエスト (基本)</button>
+                <h4 style="margin: 15px 0 5px 0; color:#0288d1;">🎯 訓練場（ニガテとっくん）</h4>
+                <div class="training-grid">
+                    <button class="btn-train" onclick="goToQuest('quest.html?grade=2&mode=train_add')">＋ たしざん</button>
+                    <button class="btn-train" onclick="goToQuest('quest.html?grade=2&mode=train_sub')">－ ひきざん</button>
+                    <button class="btn-train" style="grid-column: span 2;" onclick="goToQuest('quest.html?grade=2&mode=train_mul')">× かけざん</button>
+                </div>
+                <button class="btn-cave" onclick="goToQuest('quest.html?grade=2&mode=cave')">🕳 修行の洞くつへ</button>
+            </div>
+
+            <button class="grade-btn grade-3" onclick="toggleMenu('menu-grade3')">🌳 3年生（＋ わりざん）</button>
+            <div id="menu-grade3" class="sub-menu hidden">
+                <h3>🌳 3年生のぼうけん</h3>
+                <button class="btn-story" onclick="goToQuest('quest.html?grade=3&mode=story')">⚔️ ストーリークエスト (基本)</button>
+                <h4 style="margin: 15px 0 5px 0; color:#0288d1;">🎯 訓練場（ニガテとっくん）</h4>
+                <div class="training-grid">
+                    <button class="btn-train" onclick="goToQuest('quest.html?grade=3&mode=train_addsub')">＋－ たし・ひき</button>
+                    <button class="btn-train" onclick="goToQuest('quest.html?grade=3&mode=train_mul')">× かけざん</button>
+                    <button class="btn-train" style="grid-column: span 2; background-color: #7b1fa2;" onclick="goToQuest('quest.html?grade=3&mode=train_div')">÷ わりざん</button>
+                </div>
+                <button class="btn-cave" onclick="goToQuest('quest.html?grade=3&mode=cave')">🕳 修行の洞くつへ</button>
+            </div>
+
         </section>
 
         <section class="gacha-section">
-            <h2 style="margin-top: 0; color: #c2185b;">🎁 文章題ガチャ</h2>
-            <p style="font-size:0.9rem; color:#666;">ランダムな場面の問題が出るぞ！</p>
+            <h2 style="margin-top: 0; color: #c2185b;">🎁 トレジャーガチャ</h2>
+            <p style="font-size:0.9rem; color:#666;">どりょくの結晶（コイン）でお宝をゲット！</p>
             <div class="gacha-display-area"><div id="gacha-result-emoji">❓</div></div>
             <button class="btn-gacha-play" onclick="playGacha()">ガチャをまわす（10🪙）</button>
             <div id="gacha-message" class="message-area"></div>
         </section>
+
+        <section class="adventure-note">
+            <h2 style="margin-top: 0; color: #5d4037; border-bottom: 2px dotted #8d6e63; padding-bottom: 10px;">📖 冒険ノート</h2>
+            <p style="font-size: 0.9rem; color: #757575;">あつめた お宝や 生き物たちが きろくされるぞ！</p>
+            <div id="collection-grid" class="collection-grid"></div>
+        </section>
+
     </main>
 
     <script>
+        // --- 音声システム ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            if (type === 'click') { osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
+            else if (type === 'gacha') { osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(880, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.5); }
+        }
+
+        // --- セーブデータ管理 ---
         let level = parseInt(localStorage.getItem('saved_level')) || 1;
         let exp = parseInt(localStorage.getItem('saved_exp')) || 0;
         let coin = parseInt(localStorage.getItem('saved_coin')) || 10;
+        let myCollectionIds = JSON.parse(localStorage.getItem('saved_collection')) || [];
         const titles = [{ lv: 1, name: "みならい冒険家" }, { lv: 2, name: "かけだしの旅人" }, { lv: 3, name: "いっぱしの戦士" }, { lv: 4, name: "ベテラン探索者" }];
+        const gachaItems = [{ id: 1, emoji: "🐸" }, { id: 2, emoji: "🪙" }, { id: 3, emoji: "🗡️" }, { id: 4, emoji: "🦅" }, { id: 5, emoji: "🐉" }, { id: 6, emoji: "👑" }, { id: 7, emoji: "💎" }, { id: 8, emoji: "🦄" }];
 
         function updateStatus() {
             document.getElementById("disp-level").innerText = level;
@@ -70,20 +148,46 @@
             let currentTitle = titles[0].name;
             for(let i=0; i<titles.length; i++){ if(level >= titles[i].lv) currentTitle = titles[i].name; }
             document.getElementById("disp-title").innerText = "（" + currentTitle + "）";
-            localStorage.setItem('saved_level', level); localStorage.setItem('saved_exp', exp); localStorage.setItem('saved_coin', coin);
+            localStorage.setItem('saved_level', level); localStorage.setItem('saved_exp', exp); localStorage.setItem('saved_coin', coin); localStorage.setItem('saved_collection', JSON.stringify(myCollectionIds));
         }
 
-        function goToQuest(url) { setTimeout(() => { window.location.href = url; }, 150); }
-        
-        function playGacha() {
-            if (coin < 10) { document.getElementById("gacha-message").innerText = "コインが足りないよ！"; return; }
-            coin -= 10;
-            const items = ["🍎 たべもの問題!", "🏪 おみせ問題!", "🚃 のりもの問題!"];
-            document.getElementById("gacha-result-emoji").innerText = items[Math.floor(Math.random()*items.length)];
-            document.getElementById("gacha-message").innerText = "特別な問題にちょうせん！";
-            updateStatus();
+        // --- UI操作 ---
+        function toggleMenu(menuId) {
+            playSound('click');
+            // 一度すべてのメニューを閉じる
+            document.querySelectorAll('.sub-menu').forEach(menu => {
+                if(menu.id !== menuId) menu.classList.add('hidden');
+            });
+            // 対象のメニューを開閉する
+            document.getElementById(menuId).classList.toggle('hidden');
         }
-        updateStatus();
+
+        // クエストへ移動（URLパラメータで学年とモードを渡す）
+        function goToQuest(url) {
+            playSound('click');
+            setTimeout(() => { window.location.href = url; }, 150);
+        }
+
+        function playGacha() {
+            if (coin < 10) { document.getElementById("gacha-message").innerText = "コインが足りないよ！"; document.getElementById("gacha-message").style.color = "#d32f2f"; return; }
+            playSound('gacha'); coin -= 10;
+            let item = gachaItems[Math.floor(Math.random() * gachaItems.length)];
+            document.getElementById("gacha-result-emoji").innerText = item.emoji;
+            document.getElementById("gacha-message").innerText = "お宝ゲット！"; document.getElementById("gacha-message").style.color = "#2e7d32";
+            if (!myCollectionIds.includes(item.id)) myCollectionIds.push(item.id);
+            updateStatus(); updateCollectionGrid();
+        }
+
+        function updateCollectionGrid() {
+            let grid = document.getElementById("collection-grid"); grid.innerHTML = "";
+            gachaItems.forEach(item => {
+                let div = document.createElement("div"); div.className = "collection-item";
+                if (myCollectionIds.includes(item.id)) div.innerText = item.emoji; else div.innerHTML = "<span class='collection-unknown'>？</span>";
+                grid.appendChild(div);
+            });
+        }
+
+        updateStatus(); updateCollectionGrid();
     </script>
 </body>
 </html>
