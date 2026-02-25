@@ -25,7 +25,8 @@
         
         /* 1. クエストエリア */
         .quest-section { background-color: #fff8e1; padding: 20px; border-radius: 10px; border: 4px solid #8d6e63; margin-bottom: 30px; }
-        .quest-btn { background-color: #4caf50; color: white; font-size: 1.2rem; width: 90%; padding: 15px; margin: 10px auto; display: block; }
+        .quest-btn { background-color: #4caf50; color: white; font-size: 1.1rem; width: 90%; padding: 12px; margin: 8px auto; display: block; }
+        .quest-divider { border-top: 2px dashed #8d6e63; margin: 20px 0; }
         
         /* 2. ガチャエリア */
         .gacha-section { background-color: #fce4ec; padding: 20px; border-radius: 10px; border: 4px dashed #f06292; margin-bottom: 30px; }
@@ -37,11 +38,9 @@
         .adventure-note { 
             background-color: #fff3e0; 
             padding: 20px; 
-            border-radius: 5px 15px 15px 5px; /* 右側が丸い本のような形 */
-            border-left: 15px solid #795548; /* 本の背表紙 */
-            border-top: 2px solid #8d6e63;
-            border-right: 2px solid #8d6e63;
-            border-bottom: 2px solid #8d6e63;
+            border-radius: 5px 15px 15px 5px; 
+            border-left: 15px solid #795548; 
+            border-top: 2px solid #8d6e63; border-right: 2px solid #8d6e63; border-bottom: 2px solid #8d6e63;
             box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
         }
         .note-title { color: #5d4037; border-bottom: 2px dotted #8d6e63; padding-bottom: 10px; margin-top: 0; }
@@ -66,10 +65,19 @@
 
         <section class="quest-section">
             <h2 style="color: #3e2723; margin-top: 0;">🗺️ どこへ ぼうけんに でる？</h2>
-            <button class="quest-btn" onclick="goToQuest('unit1.html')">🌲 unit 1: たしざんの森 (1🪙)</button>
-            <button class="quest-btn" onclick="goToQuest('unit2.html')" style="background-color: #689f38;">⛰️ unit 2: ひきざんの山 (2🪙)</button>
-            <button class="quest-btn" onclick="goToQuest('unit3.html')" style="background-color: #ef6c00;">🌋 unit 3: かけざんの火山 (3🪙)</button>
-            <button class="quest-btn" onclick="goToQuest('unit4.html')" style="background-color: #0277bd;">🌊 unit 4: ミックスの海 (5🪙)</button>
+            
+            <button class="quest-btn" onclick="goToQuest('unit1.html')">🌲 たしざんの森 (1🪙)</button>
+            <button class="quest-btn" onclick="goToQuest('unit2.html')" style="background-color: #689f38;">⛰️ ひきざんの山 (2🪙)</button>
+            <button class="quest-btn" onclick="goToQuest('unit3.html')" style="background-color: #ef6c00;">🌋 かけざんの火山 (3🪙)</button>
+            <button class="quest-btn" onclick="goToQuest('unit4.html')" style="background-color: #0288d1;">🌪️ わりざんの竜巻 (4🪙)</button>
+
+            <div class="quest-divider"></div>
+            <h3 style="color: #5d4037; margin-bottom: 5px;">⚔️ 総合テスト（ミックス）</h3>
+            <p style="font-size: 0.85rem; color: #757575; margin-top: 0;">どの計算を使うか、自分で考えよう！</p>
+
+            <button class="quest-btn" onclick="goToQuest('unit5.html')" style="background-color: #7b1fa2;">🦇 洞窟：ミックス レベル1 (2🪙)</button>
+            <button class="quest-btn" onclick="goToQuest('unit6.html')" style="background-color: #c2185b;">🏰 迷宮：ミックス レベル2 (3🪙)</button>
+            <button class="quest-btn" onclick="goToQuest('unit7.html')" style="background-color: #b71c1c;">👑 魔王城：ミックス レベル3 (5🪙)</button>
         </section>
 
         <section class="gacha-section">
@@ -171,7 +179,7 @@
             }
             
             updateAndSaveStatus();
-            updateCollectionGrid(); // 引いたらすぐ図鑑に反映
+            updateCollectionGrid(); 
         }
 
         // --- 冒険ノート（図鑑）の表示更新 ---
@@ -192,7 +200,7 @@
 
         // 起動時処理
         updateAndSaveStatus();
-        updateCollectionGrid(); // 画面を開いた瞬間に図鑑を描画
+        updateCollectionGrid();
     </script>
 </body>
 </html>
