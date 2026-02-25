@@ -3,391 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>算数クエスト 〜立式マスターへの道〜</title>
+    <title>冒険の拠点 - 算数クエスト</title>
     <style>
         /* ===================================
-           CSS: 冒険の世界観を作るデザイン
+           全体デザイン
         ==================================== */
-        body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-            background-color: #e8f5e9; /* 森のような薄い緑 */
-            color: #333;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #e8f5e9; color: #333; margin: 0; padding-bottom: 50px; text-align: center; }
+        
+        /* タイトル */
+        .app-title { color: #2e7d32; font-size: 2rem; margin: 15px 0; text-shadow: 2px 2px 0px #fff; }
 
-        /* ステータスバー（画面上部） */
-        .status-bar {
-            background-color: #3e2723; /* 木の幹のような深いこげ茶色 */
-            color: #fff;
-            padding: 15px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
+        /* ステータスバー（レベル・称号） */
+        .status-bar { background-color: #3e2723; color: #fff; padding: 15px; display: flex; justify-content: space-around; font-size: 1.2rem; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-radius: 10px; margin: 0 10px; }
         .title-text { color: #ffd54f; font-size: 0.9em; margin-left: 5px; }
 
-        /* ナビゲーションメニュー */
-        .nav-menu { background-color: #5d4037; padding: 10px; }
-        .nav-btn { background-color: #8d6e63; color: white; border: 2px solid #3e2723; }
-        .nav-btn.active { background-color: #ffb300; color: #3e2723; border-color: #fff; }
-
-        /* メイン画面（宝の地図・古文書風） */
-        #main-content {
-            background-color: #fff8e1; /* 古びた羊皮紙の色 */
-            margin: 20px auto;
-            padding: 30px 20px;
-            max-width: 650px;
-            border-radius: 10px;
-            border: 5px solid #8d6e63; /* 木の枠組み */
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            min-height: 400px;
-        }
-
-        /* ボタン類（立体的で押しやすいデザイン） */
-        button {
-            font-size: 1.1rem;
-            font-weight: bold;
-            padding: 12px 18px;
-            margin: 8px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
-            transition: transform 0.1s, box-shadow 0.1s;
-        }
+        /* メインコンテンツ（ボタンやノートを囲む枠） */
+        #main-content { margin: 20px auto; max-width: 650px; padding: 0 10px; }
+        
+        button { font-weight: bold; padding: 12px 18px; margin: 8px; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,0.2); transition: transform 0.1s; }
         button:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0); }
-        button:disabled { background-color: #ccc !important; box-shadow: none; transform: none; cursor: not-allowed; }
-
-        .cat-btn { background-color: #4caf50; color: white; width: 45%; font-size: 1rem; }
-        .btn-hint { background-color: #ff9800; color: white; }
-        .btn-auto { background-color: #2196f3; color: white; width: 80%; margin-top: 20px; }
-        .btn-manual { background-color: #e91e63; color: white; width: 80%; }
+        
+        /* 1. クエストエリア */
+        .quest-section { background-color: #fff8e1; padding: 20px; border-radius: 10px; border: 4px solid #8d6e63; margin-bottom: 30px; }
+        .quest-btn { background-color: #4caf50; color: white; font-size: 1.2rem; width: 90%; padding: 15px; margin: 10px auto; display: block; }
+        
+        /* 2. ガチャエリア */
+        .gacha-section { background-color: #fce4ec; padding: 20px; border-radius: 10px; border: 4px dashed #f06292; margin-bottom: 30px; }
         .btn-gacha-play { background-color: #e53935; color: white; font-size: 1.3rem; padding: 15px 30px; }
+        .gacha-display-area { font-size: 4rem; margin: 10px 0; min-height: 80px; }
+        .gacha-name { font-size: 1.2rem; font-weight: bold; color: #d84315; }
 
-        /* 入力欄とヒント文字 */
-        input[type="text"], input[type="number"] {
-            font-size: 1.5rem;
-            padding: 10px;
-            width: 70%;
-            margin: 10px 0;
-            border: 3px solid #8d6e63;
-            border-radius: 8px;
-            text-align: center;
-            background-color: #fafafa;
+        /* 3. 冒険ノート（図鑑）エリア */
+        .adventure-note { 
+            background-color: #fff3e0; 
+            padding: 20px; 
+            border-radius: 5px 15px 15px 5px; /* 右側が丸い本のような形 */
+            border-left: 15px solid #795548; /* 本の背表紙 */
+            border-top: 2px solid #8d6e63;
+            border-right: 2px solid #8d6e63;
+            border-bottom: 2px solid #8d6e63;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
         }
-        .hint-target { font-weight: bold; transition: color 0.3s, background-color 0.3s; }
-        .hint-active { color: red; background-color: yellow; padding: 0 5px; border-radius: 5px; }
+        .note-title { color: #5d4037; border-bottom: 2px dotted #8d6e63; padding-bottom: 10px; margin-top: 0; }
+        .collection-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .collection-item { font-size: 2.5rem; background: #fff; border: 1px solid #d7ccc8; border-radius: 5px; padding: 10px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
+        .collection-unknown { color: #e0e0e0; font-size: 2rem; display: flex; align-items: center; justify-content: center; height: 100%; }
 
-        /* ガチャと図鑑のデザイン */
-        .gacha-display-area { font-size: 5rem; margin: 20px 0; min-height: 120px; }
-        .gacha-name { font-size: 1.5rem; font-weight: bold; color: #d84315; }
-        .collection-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
-        .collection-item { font-size: 3rem; background: #fff; border: 2px dashed #8d6e63; border-radius: 10px; padding: 10px; }
-        .collection-unknown { color: #ccc; font-size: 2rem; display: flex; align-items: center; justify-content: center; height: 100%; }
-
-        .hidden { display: none !important; }
-        .message-area { font-size: 1.3em; font-weight: bold; margin-top: 15px; min-height: 1.5em; }
+        .message-area { font-size: 1.2em; font-weight: bold; margin-top: 10px; min-height: 1.5em; }
     </style>
 </head>
 <body>
 
-    <header id="status-bar" class="status-bar">
-        <div class="status-item">
-            🌟 レベル: <span id="disp-level">1</span> 
-            <span id="disp-title" class="title-text">（みならい冒険家）</span>
-        </div>
-        <div class="status-item">⚔️ EXP: <span id="disp-exp">0</span> / 5</div>
-        <div class="status-item">🪙 コイン: <span id="disp-coin">10</span></div> </header>
+    <h1 class="app-title">⚔️ 算数クエスト ⚔️</h1>
 
-    <nav id="main-nav" class="nav-menu">
-        <button id="nav-study" class="nav-btn active" onclick="switchScreen('study')">📖 がくしゅう</button>
-        <button id="nav-gacha" class="nav-btn" onclick="switchScreen('gacha')">🎁 ガチャ</button>
-        <button id="nav-collection" class="nav-btn" onclick="switchScreen('collection')">📘 ずかん</button>
-    </nav>
+    <header id="status-bar" class="status-bar">
+        <div>🌟 Lv: <span id="disp-level">1</span> <span id="disp-title" class="title-text">（みならい）</span></div>
+        <div>⚔️ EXP: <span id="disp-exp">0</span>/5</div>
+        <div>🪙 <span id="disp-coin">10</span>枚</div>
+    </header>
 
     <main id="main-content">
 
-        <section id="screen-study" class="screen">
-            <div class="category-selector">
-                <button class="cat-btn" onclick="playSound('click')">たしざん (1🪙)</button>
-                <button class="cat-btn" onclick="playSound('click')">ひきざん (2🪙)</button>
-                <button class="cat-btn" onclick="playSound('click')">かけざん (3🪙)</button>
-                <button class="cat-btn" onclick="playSound('click')">わりざん (4🪙)</button>
-                <button class="cat-btn" onclick="playSound('click')">ミックス レベル1 (2🪙)</button>
-                <button class="cat-btn" onclick="playSound('click')">ミックス レベル3 (5🪙)</button>
-            </div>
-
-            <hr style="border:1px dashed #8d6e63; margin: 20px 0;">
-
-            <div class="question-box">
-                <p id="question-text" style="font-size: 1.2rem; text-align: left; padding: 0 20px;">
-                    【テスト問題】<br>りんごが 5こ あります。みかんを 3こ かいました。<br>
-                    <span id="hint-target" class="hint-target">あわせて</span> いくつに なりますか。
-                </p>
-                <button id="btn-hint" class="btn-hint" onclick="showHint()">💡 ヒント</button>
-            </div>
-
-            <div class="input-box">
-                <div class="input-group">
-                    <label for="input-equation">しき：</label>
-                    <input type="text" id="input-equation" placeholder="例: 5+3" autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label for="input-answer">こたえ：</label>
-                    <input type="number" id="input-answer" placeholder="おまかせの時は空でOK" autocomplete="off">
-                </div>
-            </div>
-
-            <div class="action-box">
-                <button id="btn-auto-calc" class="btn-action btn-auto" onclick="checkAnswer('auto')">
-                    ⚔️ けいさんをおまかせ！<br><small>（式だけあっていればOK）</small>
-                </button>
-                <button id="btn-manual-calc" class="btn-action btn-manual" onclick="checkAnswer('manual')">
-                    💪 じぶんでけいさんした！<br><small>（正解すると ボーナス +1🪙）</small>
-                </button>
-            </div>
-
-            <div id="result-message" class="message-area"></div>
+        <section class="quest-section">
+            <h2 style="color: #3e2723; margin-top: 0;">🗺️ どこへ ぼうけんに でる？</h2>
+            <button class="quest-btn" onclick="goToQuest('unit1.html')">🌲 unit 1: たしざんの森 (1🪙)</button>
+            <button class="quest-btn" onclick="goToQuest('unit2.html')" style="background-color: #689f38;">⛰️ unit 2: ひきざんの山 (2🪙)</button>
+            <button class="quest-btn" onclick="goToQuest('unit3.html')" style="background-color: #ef6c00;">🌋 unit 3: かけざんの火山 (3🪙)</button>
+            <button class="quest-btn" onclick="goToQuest('unit4.html')" style="background-color: #0277bd;">🌊 unit 4: ミックスの海 (5🪙)</button>
         </section>
 
-
-        <section id="screen-gacha" class="screen hidden">
-            <h2>お宝ガチャ</h2>
-            <p>10コインで 1回 ガチャがひけるよ！</p>
-            
+        <section class="gacha-section">
+            <h2 style="margin-top: 0; color: #c2185b;">🎁 お宝ガチャ</h2>
             <div class="gacha-display-area">
                 <div id="gacha-result-emoji" class="gacha-emoji">❓</div>
-                <div id="gacha-result-name" class="gacha-name">なにがでるかな？</div>
             </div>
-
-            <button id="btn-play-gacha" class="btn-gacha-play" onclick="playGacha()">ガチャをまわす（10🪙）</button>
+            <div id="gacha-result-name" class="gacha-name">なにがでるかな？</div>
+            <button class="btn-gacha-play" onclick="playGacha()">ガチャをまわす（10🪙）</button>
             <div id="gacha-message" class="message-area"></div>
         </section>
 
-
-        <section id="screen-collection" class="screen hidden">
-            <h2>ぼうけんの きろく（ずかん）</h2>
-            <p>あつめた お宝や 生き物たち</p>
-            <div id="collection-grid" class="collection-grid">
-                </div>
+        <section class="adventure-note">
+            <h2 class="note-title">📔 ぼうけんノート</h2>
+            <p style="font-size: 0.9rem; color: #757575;">あつめた お宝や 生き物たちが きろくされるぞ！</p>
+            <div id="collection-grid" class="collection-grid"></div>
         </section>
 
     </main>
 
     <script>
-        /* ===================================
-           JS: ブラウザで音を鳴らす仕組み
-        ==================================== */
+        // --- ブラウザの音システム ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
             
             if (type === 'click') {
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.1);
-            } else if (type === 'correct') {
-                oscillator.type = 'triangle';
-                oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); 
-                oscillator.frequency.setValueAtTime(1108, audioCtx.currentTime + 0.1); 
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.3);
-            } else if (type === 'wrong') {
-                oscillator.type = 'sawtooth';
-                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.2);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.1);
             } else if (type === 'gacha') {
-                oscillator.type = 'square';
-                oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
-                oscillator.frequency.linearRampToValueAtTime(880, audioCtx.currentTime + 0.5);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.5);
+                osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(880, audioCtx.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.2);
             }
         }
 
-        /* ===================================
-           JS: ゲームのデータとロジック
-        ==================================== */
-        // セーブデータの代わり（テスト用）
-        let level = 1;
-        let exp = 0;
-        let coin = 10; // ガチャテスト用に最初から10枚
-        let myCollectionIds = []; // ゲットしたガチャのID
+        // --- セーブデータの読み込み ---
+        let level = parseInt(localStorage.getItem('saved_level')) || 1;
+        let exp = parseInt(localStorage.getItem('saved_exp')) || 0;
+        let coin = parseInt(localStorage.getItem('saved_coin')) || 10;
+        let myCollectionIds = JSON.parse(localStorage.getItem('saved_collection')) || [];
 
-        // 称号のリスト
-        const titles = [
-            { lv: 1, name: "みならい冒険家" },
-            { lv: 2, name: "かけだしの旅人" },
-            { lv: 3, name: "いっぱしの戦士" },
-            { lv: 4, name: "ベテラン探索者" },
-            { lv: 5, name: "伝説の勇者" }
-        ];
-
-        // テスト用の問題データ
-        const testQuestion = { equation: "5+3", answer: "8", reward: 1 };
-
-        // テスト用のガチャ景品データ
+        // データリスト
+        const titles = [{ lv: 1, name: "みならい冒険家" }, { lv: 2, name: "かけだしの旅人" }, { lv: 3, name: "いっぱしの戦士" }, { lv: 4, name: "ベテラン探索者" }, { lv: 5, name: "伝説の勇者" }];
         const gachaItems = [
-            { id: 1, emoji: "🐸", name: "スライムガエル" },
-            { id: 2, emoji: "🪙", name: "古びた金貨" },
-            { id: 3, emoji: "🗡️", name: "どうのつるぎ" },
-            { id: 4, emoji: "🦅", name: "大空のワシ" },
-            { id: 5, emoji: "🐉", name: "伝説のドラゴン" }
+            { id: 1, emoji: "🐸", name: "スライムガエル" }, { id: 2, emoji: "🪙", name: "古びた金貨" },
+            { id: 3, emoji: "🗡️", name: "どうのつるぎ" }, { id: 4, emoji: "🦅", name: "大空のワシ" }, { id: 5, emoji: "🐉", name: "伝説のドラゴン" }
         ];
 
-        // --- 画面切り替え ---
-        function switchScreen(screenName) {
-            playSound('click');
-            // すべての画面を隠す
-            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            // 選んだ画面だけ表示する
-            document.getElementById(`screen-${screenName}`).classList.remove('hidden');
-            document.getElementById(`nav-${screenName}`).classList.add('active');
-
-            // 図鑑画面を開いた時は図鑑を更新
-            if(screenName === 'collection') updateCollectionGrid();
-        }
-
-        // --- ヒント機能 ---
-        function showHint() {
-            playSound('click');
-            document.getElementById("hint-target").classList.add("hint-active");
-        }
-
-        // --- 答え合わせ機能 ---
-        function checkAnswer(mode) {
-            let inputEq = document.getElementById("input-equation").value.replace(/\s+/g, "");
-            let inputAns = document.getElementById("input-answer").value.replace(/\s+/g, "");
-            let msgBox = document.getElementById("result-message");
-
-            // 式が合っているか
-            let isEqCorrect = (inputEq === testQuestion.equation);
-            // 答えも合っているか
-            let isAnsCorrect = (inputAns === testQuestion.answer);
-
-            if (mode === 'auto') {
-                if (isEqCorrect) {
-                    processCorrect("おまかせ大正解！ 答えは「" + testQuestion.answer + "」だよ！", testQuestion.reward);
-                } else {
-                    processWrong("式がちがうみたい…。もう一度考えよう！");
-                }
-            } else if (mode === 'manual') {
-                if (isEqCorrect && isAnsCorrect) {
-                    // 自力計算ボーナス +1 コイン！
-                    processCorrect("じりきで大正解！ すごい！ ボーナス+1🪙", testQuestion.reward + 1);
-                } else if (isEqCorrect && !isAnsCorrect) {
-                    processWrong("式は合ってるけど、計算がちがうかも？");
-                } else {
-                    processWrong("式も答えもちがうみたい…。");
-                }
-            }
-        }
-
-        // --- 正解したときの処理 ---
-        function processCorrect(msg, getCoin) {
-            playSound('correct');
-            document.getElementById("result-message").innerText = msg;
-            document.getElementById("result-message").style.color = "#2e7d32";
-            
-            coin += getCoin;
-            exp += 1;
-
-            if (exp >= 5) {
-                level += 1;
-                exp = 0;
-                coin += 5; // レベルアップボーナス
-                alert("🎉 レベルアップ！！ レベル " + level + " になった！\nボーナス 5🪙 ゲット！");
-            }
-            updateStatus();
-        }
-
-        // --- 間違えたときの処理 ---
-        function processWrong(msg) {
-            playSound('wrong');
-            document.getElementById("result-message").innerText = msg;
-            document.getElementById("result-message").style.color = "#d32f2f";
-        }
-
-        // --- ステータス更新 ---
-        function updateStatus() {
+        // --- 画面更新とセーブ ---
+        function updateAndSaveStatus() {
             document.getElementById("disp-level").innerText = level;
             document.getElementById("disp-exp").innerText = exp;
             document.getElementById("disp-coin").innerText = coin;
 
-            // 称号の更新
             let currentTitle = titles[0].name;
-            for(let i=0; i<titles.length; i++){
-                if(level >= titles[i].lv) currentTitle = titles[i].name;
-            }
+            for(let i=0; i<titles.length; i++){ if(level >= titles[i].lv) currentTitle = titles[i].name; }
             document.getElementById("disp-title").innerText = "（" + currentTitle + "）";
+
+            localStorage.setItem('saved_level', level);
+            localStorage.setItem('saved_exp', exp);
+            localStorage.setItem('saved_coin', coin);
+            localStorage.setItem('saved_collection', JSON.stringify(myCollectionIds));
+        }
+
+        // --- クエストへ出発 ---
+        function goToQuest(url) {
+            playSound('click');
+            setTimeout(() => { window.location.href = url; }, 150);
         }
 
         // --- ガチャ機能 ---
         function playGacha() {
             if (coin < 10) {
                 playSound('wrong');
-                document.getElementById("gacha-message").innerText = "コインが足りないよ！(あと " + (10 - coin) + "🪙)";
+                document.getElementById("gacha-message").innerText = "コインが足りないよ！";
                 document.getElementById("gacha-message").style.color = "#d32f2f";
                 return;
             }
 
             playSound('gacha');
             coin -= 10;
-            updateStatus();
-
-            // ランダムで景品を選ぶ
+            
             let randomIdx = Math.floor(Math.random() * gachaItems.length);
             let item = gachaItems[randomIdx];
 
-            // 画面に表示
             document.getElementById("gacha-result-emoji").innerText = item.emoji;
             document.getElementById("gacha-result-name").innerText = item.name;
             document.getElementById("gacha-message").innerText = "「" + item.name + "」をゲットした！";
             document.getElementById("gacha-message").style.color = "#2e7d32";
 
-            // 図鑑に登録（まだ持っていなければ）
             if (!myCollectionIds.includes(item.id)) {
                 myCollectionIds.push(item.id);
             }
+            
+            updateAndSaveStatus();
+            updateCollectionGrid(); // 引いたらすぐ図鑑に反映
         }
 
-        // --- 図鑑（コレクション）の表示更新 ---
+        // --- 冒険ノート（図鑑）の表示更新 ---
         function updateCollectionGrid() {
             let grid = document.getElementById("collection-grid");
-            grid.innerHTML = ""; // 一度空にする
-
-            // ガチャの全種類を図鑑に並べる
+            grid.innerHTML = "";
             gachaItems.forEach(item => {
                 let div = document.createElement("div");
                 div.className = "collection-item";
-                
-                if (myCollectionIds.includes(item.id)) {
-                    // 持っている場合
-                    div.innerText = item.emoji;
-                } else {
-                    // 持っていない場合
-                    div.innerHTML = "<span class='collection-unknown'>？</span>";
+                if (myCollectionIds.includes(item.id)) { 
+                    div.innerText = item.emoji; 
+                } else { 
+                    div.innerHTML = "<span class='collection-unknown'>？</span>"; 
                 }
                 grid.appendChild(div);
             });
         }
 
-        // 起動時にステータスを反映
-        updateStatus();
+        // 起動時処理
+        updateAndSaveStatus();
+        updateCollectionGrid(); // 画面を開いた瞬間に図鑑を描画
     </script>
 </body>
 </html>
