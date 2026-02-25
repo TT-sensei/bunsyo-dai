@@ -1,1 +1,217 @@
-あ
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>クエスト - 算数クエスト</title>
+
+<style>
+body { font-family: sans-serif; background: #e3f2fd; text-align: center; margin: 0; padding: 20px; }
+h1 { color: #1565c0; }
+
+.question-box { background: white; padding: 20px; border-radius: 10px; margin: 20px auto; max-width: 600px; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+/* 式入力エリアのデザイン */
+.formula-area { margin: 20px 0; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
+.f-input { font-size: 1.5rem; padding: 10px; width: 60px; text-align: center; border: 2px solid #90caf9; border-radius: 8px; }
+.f-select { font-size: 1.5rem; padding: 8px; border: 2px solid #90caf9; border-radius: 8px; background: white; }
+
+button { padding: 12px 20px; margin: 8px; font-size: 1.1rem; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: transform 0.1s; }
+button:active { transform: translateY(4px); box-shadow: none; }
+
+.btn-answer { background: #2e7d32; color: white; width: 200px; display: block; margin: 20px auto; }
+.btn-hint { background: #ffb300; color: #333; }
+.btn-next { background: #0288d1; color: white; display: none; margin: 20px auto; }
+.btn-back { background: #546e7a; color: white; margin-top: 30px; }
+
+.result { font-size: 1.5rem; margin-top: 15px; font-weight: bold; min-height: 40px; }
+.coin-get { color: #fbc02d; font-size: 1.2rem; display: none; animation: popIn 0.5s ease; }
+
+@keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
+</style>
+</head>
+
+<body>
+
+<h1>⚔️ クエスト</h1>
+
+<div class="question-box">
+  <div id="q-text">よみこみ中...</div>
+</div>
+
+<div class="formula-area">
+  式：
+  <input type="number" id="f-num1" class="f-input">
+  <select id="f-op" class="f-select">
+    <option value="?">?</option>
+    <option value="+">＋</option>
+    <option value="-">－</option>
+    <option value="×">×</option>
+    <option value="÷">÷</option>
+  </select>
+  <input type="number" id="f-num2" class="f-input">
+  ＝
+  <input type="number" id="f-ans" class="f-input" style="width: 80px;" placeholder="こたえ">
+</div>
+
+<div>
+  <button class="btn-hint" onclick="showHint()">💡 ヒント</button>
+  <button class="btn-answer" id="btn-answer" onclick="checkAnswer()">📝 こたえあわせ</button>
+  <button class="btn-next" id="btn-next" onclick="nextQuestion()">➡️ つぎのもんだい</button>
+</div>
+
+<div id="result" class="result"></div>
+<div id="coin-get" class="coin-get">✨ コイン +1 & けいけんち +1 ✨</div>
+
+<div>
+  <button class="btn-back" onclick="goBack()">🏠 拠点にもどる</button>
+</div>
+
+<script src="data.js"></script>
+
+<script>
+// ------------------------
+// URLパラメータ取得
+// ------------------------
+const params = new URLSearchParams(window.location.search);
+const grade = Number(params.get("grade"));
+const mode = params.get("mode");
+
+let currentQuestion = null;
+let isAnswered = false; // すでに正解したかどうかのフラグ
+
+// ------------------------
+// 問題のセットアップ
+// ------------------------
+function loadQuestion() {
+  isAnswered = false;
+  document.getElementById("btn-answer").style.display = "block";
+  document.getElementById("btn-next").style.display = "none";
+  document.getElementById("result").innerText = "";
+  document.getElementById("coin-get").style.display = "none";
+  
+  // 入力欄をリセット
+  document.getElementById("f-num1").value = "";
+  document.getElementById("f-op").value = "?";
+  document.getElementById("f-num2").value = "";
+  document.getElementById("f-ans").value = "";
+
+  // フィルタリング
+  let filtered = questTemplates.filter(q => q.grade === grade);
+  if(mode === "train_add") filtered = filtered.filter(q => q.operation === "add");
+  if(mode === "train_sub") filtered = filtered.filter(q => q.operation === "sub");
+  if(mode === "train_mul") filtered = filtered.filter(q => q.operation === "mul");
+  if(mode === "train_div") filtered = filtered.filter(q => q.operation === "div");
+
+  // ランダム選択して生成（data.js の関数を使用！）
+  const template = choice(filtered);
+  currentQuestion = generateQuestion(template);
+
+  // 画面に表示
+  document.getElementById("q-text").innerText = currentQuestion.text;
+}
+
+// ------------------------
+// 答え合わせ（式と答えの両方をチェック）
+// ------------------------
+function checkAnswer() {
+  if (isAnswered) return; // 連続タップ防止
+
+  const uNum1 = Number(document.getElementById("f-num1").value);
+  const uOp = document.getElementById("f-op").value;
+  const uNum2 = Number(document.getElementById("f-num2").value);
+  const uAns = Number(document.getElementById("f-ans").value);
+  const resultText = document.getElementById("result");
+
+  // 正解の記号を判定
+  let correctOp = "?";
+  if (currentQuestion.operation === "add") correctOp = "+";
+  if (currentQuestion.operation === "sub") correctOp = "-";
+  if (currentQuestion.operation === "mul") correctOp = "×";
+  if (currentQuestion.operation === "div") correctOp = "÷";
+
+  // たし算・かけ算は数字が逆でもOKにする（例：3+4 と 4+3）
+  let isFormulaCorrect = false;
+  if (currentQuestion.operation === "add" || currentQuestion.operation === "mul") {
+      isFormulaCorrect = (uOp === correctOp) && 
+                         ((uNum1 === currentQuestion.num1 && uNum2 === currentQuestion.num2) || 
+                          (uNum1 === currentQuestion.num2 && uNum2 === currentQuestion.num1));
+  } else {
+      // ひき算・わり算は順番通りじゃないとダメ
+      isFormulaCorrect = (uOp === correctOp && uNum1 === currentQuestion.num1 && uNum2 === currentQuestion.num2);
+  }
+
+  // 判定処理
+  if (isFormulaCorrect && uAns === currentQuestion.answer) {
+    resultText.innerHTML = "🎉 大せいかい！ 式もバッチリ！";
+    resultText.style.color = "#2e7d32";
+    saveReward(); // コインと経験値を付与
+    isAnswered = true;
+    
+    // ボタンの切り替え
+    document.getElementById("btn-answer").style.display = "none";
+    document.getElementById("btn-next").style.display = "block";
+  } else if (uAns === currentQuestion.answer) {
+    resultText.innerHTML = "⚠️ 答えは合ってるけど、式がちがうみたい…？";
+    resultText.style.color = "#f57c00";
+  } else {
+    resultText.innerHTML = "❌ もういちど 考えてみよう！";
+    resultText.style.color = "#c62828";
+  }
+}
+
+// ------------------------
+// 報酬のセーブ機能
+// ------------------------
+function saveReward() {
+  let exp = parseInt(localStorage.getItem('saved_exp')) || 0;
+  let coin = parseInt(localStorage.getItem('saved_coin')) || 10;
+  let solvedCount = parseInt(localStorage.getItem('saved_solved_count')) || 0;
+  let level = parseInt(localStorage.getItem('saved_level')) || 1;
+
+  exp += 1;
+  coin += 1;
+  solvedCount += 1;
+
+  // レベルアップ判定（5EXPごとに1レベルアップ）
+  if (exp >= 5) {
+      exp = 0;
+      level += 1;
+      alert(`🌟 レベルアップ！ レベル ${level} になったよ！`);
+  }
+
+  localStorage.setItem('saved_exp', exp);
+  localStorage.setItem('saved_coin', coin);
+  localStorage.setItem('saved_solved_count', solvedCount);
+  localStorage.setItem('saved_level', level);
+
+  document.getElementById("coin-get").style.display = "block";
+}
+
+// ------------------------
+// ヒント（問題文の色を変える）
+// ------------------------
+function showHint() {
+  let htmlText = currentQuestion.text;
+  currentQuestion.keywords.forEach(word => {
+    htmlText = htmlText.replaceAll(word,
+      `<span style="color:#e53935; font-weight:bold; background:#ffcdd2; padding:0 3px; border-radius:3px;">${word}</span>`
+    );
+  });
+  document.getElementById("q-text").innerHTML = htmlText;
+}
+
+function nextQuestion() {
+  loadQuestion();
+}
+
+function goBack() {
+  window.location.href = "index.html";
+}
+
+// 起動時に最初の問題を読み込む
+window.onload = loadQuestion;
+</script>
+
+</body>
+</html>
