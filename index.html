@@ -1028,9 +1028,9 @@ function updateStatus() {
     document.getElementById('disp-title').innerText = getTitle(level);
     document.getElementById('disp-solved').innerText = solvedCount;
 
-    const pct = (exp / 5) * 100;
+    const pct = (exp / 10) * 100;
     document.getElementById('exp-bar').style.width = pct + '%';
-    document.getElementById('exp-text').innerText = exp + '/5';
+    document.getElementById('exp-text').innerText = exp + '/10';
 
     // 次のアイテムまで
     const levelsToNext = 5 - (level % 5 === 0 ? 5 : level % 5);
