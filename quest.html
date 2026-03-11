@@ -4,213 +4,735 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>クエスト - 算数クエスト</title>
-
 <style>
-body { font-family: sans-serif; background: #e3f2fd; text-align: center; margin: 0; padding: 20px; }
-h1 { color: #1565c0; }
+@import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap');
 
-.question-box { background: white; padding: 20px; border-radius: 10px; margin: 20px auto; max-width: 600px; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* 式入力エリアのデザイン */
-.formula-area { margin: 20px 0; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
-.f-input { font-size: 1.5rem; padding: 10px; width: 60px; text-align: center; border: 2px solid #90caf9; border-radius: 8px; }
-.f-select { font-size: 1.5rem; padding: 8px; border: 2px solid #90caf9; border-radius: 8px; background: white; }
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: linear-gradient(160deg, #cce8ff 0%, #e0f5e9 50%, #fff9e0 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #1a2a3a;
+    padding-bottom: 60px;
+}
 
-button { padding: 12px 20px; margin: 8px; font-size: 1.1rem; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: transform 0.1s; }
-button:active { transform: translateY(4px); box-shadow: none; }
+/* ヘッダー */
+.quest-header {
+    background: linear-gradient(135deg, #1565c0 0%, #0288d1 60%, #26c6da 100%);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 3px 12px rgba(21,101,192,0.3);
+}
 
-.btn-answer { background: #2e7d32; color: white; width: 200px; display: block; margin: 20px auto; }
-.btn-hint { background: #ffb300; color: #333; }
-.btn-next { background: #0288d1; color: white; display: none; margin: 20px auto; }
-.btn-back { background: #546e7a; color: white; margin-top: 30px; }
+.header-title {
+    font-family: 'Kaisei Decol', serif;
+    color: #fff;
+    font-size: 1.2rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
 
-.result { font-size: 1.5rem; margin-top: 15px; font-weight: bold; min-height: 40px; }
-.coin-get { color: #fbc02d; font-size: 1.2rem; display: none; animation: popIn 0.5s ease; }
+.header-mode {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
 
-@keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
+/* メインエリア */
+#main {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 20px 14px;
+}
+
+/* 問題カード */
+.question-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px 22px;
+    box-shadow: 0 4px 16px rgba(21,101,192,0.1);
+    border: 2px solid rgba(21,101,192,0.1);
+    margin-bottom: 16px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.question-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #1976d2;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+}
+
+.question-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.7;
+    color: #1a2a3a;
+    min-height: 60px;
+}
+
+/* 式入力エリア */
+.formula-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 4px 16px rgba(21,101,192,0.1);
+    border: 2px solid rgba(21,101,192,0.1);
+    margin-bottom: 16px;
+}
+
+.formula-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #1976d2;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+}
+
+.formula-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.f-input {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    width: 64px;
+    padding: 10px 6px;
+    text-align: center;
+    border: 2px solid #90caf9;
+    border-radius: 10px;
+    background: #f0f7ff;
+    color: #1a2a3a;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -moz-appearance: textfield;
+}
+
+.f-input::-webkit-outer-spin-button,
+.f-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.f-input:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(25,118,210,0.15);
+    background: #fff;
+}
+
+.f-input.ans-input {
+    width: 80px;
+    border-color: #66bb6a;
+    background: #f1f8e9;
+}
+
+.f-input.ans-input:focus {
+    border-color: #388e3c;
+    box-shadow: 0 0 0 3px rgba(56,142,60,0.15);
+}
+
+.f-select {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    padding: 10px 8px;
+    border: 2px solid #90caf9;
+    border-radius: 10px;
+    background: #f0f7ff;
+    color: #1565c0;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.f-select:focus {
+    outline: none;
+    border-color: #1976d2;
+}
+
+.f-eq {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #546e7a;
+}
+
+/* 答えだけモード（1年生） */
+.ans-only-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #546e7a;
+}
+
+/* ボタンエリア */
+.btn-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+button {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.15s, box-shadow 0.15s;
+}
+
+button:active { transform: scale(0.95); }
+
+.btn-check {
+    background: linear-gradient(135deg, #2e9e5b, #43a047);
+    color: #fff;
+    font-size: 1.1rem;
+    padding: 14px 0;
+    width: 100%;
+    box-shadow: 0 4px 0 #1b5e20;
+}
+
+.btn-check:active { box-shadow: 0 1px 0 #1b5e20; transform: translateY(3px); }
+
+.btn-hint {
+    background: #fff8e1;
+    color: #e65100;
+    font-size: 0.95rem;
+    padding: 10px 20px;
+    border: 2px solid #ffcc02;
+}
+
+.btn-next {
+    background: linear-gradient(135deg, #1565c0, #0288d1);
+    color: #fff;
+    font-size: 1.1rem;
+    padding: 14px 0;
+    width: 100%;
+    box-shadow: 0 4px 0 #0d47a1;
+    display: none;
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.btn-next:active { box-shadow: 0 1px 0 #0d47a1; transform: translateY(3px); }
+
+@keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+.btn-back {
+    background: #eceff1;
+    color: #546e7a;
+    font-size: 0.9rem;
+    padding: 10px 24px;
+    border: 2px solid #cfd8dc;
+}
+
+/* 結果表示 */
+.result-card {
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.result-card.correct {
+    background: #e8f5e9;
+    border: 2px solid #66bb6a;
+    color: #2e7d32;
+}
+
+.result-card.partial {
+    background: #fff8e1;
+    border: 2px solid #ffb300;
+    color: #e65100;
+}
+
+.result-card.wrong {
+    background: #ffebee;
+    border: 2px solid #ef9a9a;
+    color: #c62828;
+}
+
+.result-card.empty { display: none; }
+
+.result-answer-hint {
+    font-size: 0.9rem;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+/* 報酬表示 */
+.reward-badge {
+    display: none;
+    background: linear-gradient(135deg, #fff8e1, #fff3e0);
+    border: 2px solid #ffb300;
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    color: #e65100;
+    font-weight: 700;
+    text-align: center;
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    margin-bottom: 10px;
+}
+
+/* cave モード：まちがいなし */
+.cave-empty {
+    background: #fff;
+    border-radius: 18px;
+    padding: 40px 24px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(21,101,192,0.1);
+    border: 2px solid rgba(21,101,192,0.1);
+}
+
+.cave-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.cave-empty-text { font-size: 1.1rem; font-weight: 700; color: #2e7d32; margin-bottom: 6px; }
+.cave-empty-sub  { font-size: 0.9rem; color: #78909c; }
 </style>
 </head>
-
 <body>
 
-<h1>⚔️ クエスト</h1>
+<header class="quest-header">
+    <div class="header-title">⚔️ クエスト</div>
+    <div class="header-mode" id="header-mode">よみこみ中...</div>
+</header>
 
-<div class="question-box">
-  <div id="q-text">よみこみ中...</div>
-</div>
+<div id="main">
 
-<div class="formula-area">
-  式：
-  <input type="number" id="f-num1" class="f-input">
-  <select id="f-op" class="f-select">
-    <option value="?">?</option>
-    <option value="+">＋</option>
-    <option value="-">－</option>
-    <option value="×">×</option>
-    <option value="÷">÷</option>
-  </select>
-  <input type="number" id="f-num2" class="f-input">
-  ＝
-  <input type="number" id="f-ans" class="f-input" style="width: 80px;" placeholder="こたえ">
-</div>
+    <!-- 問題カード -->
+    <div class="question-card" id="question-card">
+        <div class="question-label">📜 もんだい</div>
+        <div class="question-text" id="q-text">よみこみ中...</div>
+    </div>
 
-<div>
-  <button class="btn-hint" onclick="showHint()">💡 ヒント</button>
-  <button class="btn-answer" id="btn-answer" onclick="checkAnswer()">📝 こたえあわせ</button>
-  <button class="btn-next" id="btn-next" onclick="nextQuestion()">➡️ つぎのもんだい</button>
-</div>
+    <!-- 式入力 -->
+    <div class="formula-card" id="formula-card">
+        <div class="formula-label" id="formula-label">✏️ しきと こたえを いれよう</div>
 
-<div id="result" class="result"></div>
-<div id="coin-get" class="coin-get">✨ コイン +1 & けいけんち +1 ✨</div>
+        <!-- 式フル入力（2・3年生） -->
+        <div class="formula-row" id="formula-full">
+            <span style="font-size:1rem; color:#78909c; font-weight:700;">しき：</span>
+            <input type="number" inputmode="numeric" id="f-num1" class="f-input" min="0">
+            <select id="f-op" class="f-select">
+                <option value="?">？</option>
+                <option value="+">＋</option>
+                <option value="-">－</option>
+                <option value="×">×</option>
+                <option value="÷">÷</option>
+            </select>
+            <input type="number" inputmode="numeric" id="f-num2" class="f-input" min="0">
+            <span class="f-eq">＝</span>
+            <input type="number" inputmode="numeric" id="f-ans-full" class="f-input ans-input" min="0" placeholder="?">
+        </div>
 
-<div>
-  <button class="btn-back" onclick="goBack()">🏠 拠点にもどる</button>
+        <!-- 答えだけ（1年生） -->
+        <div class="ans-only-row" id="formula-ans-only" style="display:none;">
+            こたえ：
+            <input type="number" inputmode="numeric" id="f-ans-only" class="f-input ans-input" style="width:100px; font-size:1.6rem;" min="0" placeholder="?">
+        </div>
+    </div>
+
+    <!-- 結果 -->
+    <div class="result-card empty" id="result-card"></div>
+
+    <!-- 報酬バッジ -->
+    <div class="reward-badge" id="reward-badge"></div>
+
+    <!-- ボタン -->
+    <div class="btn-area">
+        <button class="btn-check" id="btn-check" onclick="checkAnswer()">📝 こたえあわせ</button>
+        <button class="btn-next"  id="btn-next"  onclick="nextQuestion()">➡️ つぎのもんだい</button>
+        <div class="btn-row">
+            <button class="btn-hint" id="btn-hint" onclick="showHint()">💡 ヒント</button>
+            <button class="btn-back" onclick="goBack()">🏠 もどる</button>
+        </div>
+    </div>
+
 </div>
 
 <script src="data.js"></script>
-
 <script>
-// ------------------------
-// URLパラメータ取得
-// ------------------------
+
+// ========================================
+// URLパラメータ
+// ========================================
 const params = new URLSearchParams(window.location.search);
-const grade = Number(params.get("grade"));
-const mode = params.get("mode");
+const grade  = Number(params.get('grade'));
+const mode   = params.get('mode');
 
+// ========================================
+// 状態
+// ========================================
 let currentQuestion = null;
-let isAnswered = false; // すでに正解したかどうかのフラグ
+let isAnswered      = false;
+let hintUsed        = false;
 
-// ------------------------
-// 問題のセットアップ
-// ------------------------
+// ========================================
+// セーブデータ
+// ========================================
+function load(key, def) {
+    const v = localStorage.getItem(key);
+    return v !== null ? JSON.parse(v) : def;
+}
+function save(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
+}
+
+// ========================================
+// モードラベル
+// ========================================
+const modeLabels = {
+    story:       '⚔️ ストーリー',
+    train_add:   '＋ たしざん',
+    train_sub:   '－ ひきざん',
+    train_mul:   '× かけざん',
+    train_div:   '÷ わりざん',
+    train_addsub:'＋－ たし・ひき',
+    cave:        '🕳 まちがいなおし',
+};
+
+// ========================================
+// 問題ロード
+// ========================================
 function loadQuestion() {
-  isAnswered = false;
-  document.getElementById("btn-answer").style.display = "block";
-  document.getElementById("btn-next").style.display = "none";
-  document.getElementById("result").innerText = "";
-  document.getElementById("coin-get").style.display = "none";
-  
-  // 入力欄をリセット
-  document.getElementById("f-num1").value = "";
-  document.getElementById("f-op").value = "?";
-  document.getElementById("f-num2").value = "";
-  document.getElementById("f-ans").value = "";
+    isAnswered = false;
+    hintUsed   = false;
 
-  // フィルタリング
-  let filtered = questTemplates.filter(q => q.grade === grade);
-  if(mode === "train_add") filtered = filtered.filter(q => q.operation === "add");
-  if(mode === "train_sub") filtered = filtered.filter(q => q.operation === "sub");
-  if(mode === "train_mul") filtered = filtered.filter(q => q.operation === "mul");
-  if(mode === "train_div") filtered = filtered.filter(q => q.operation === "div");
+    // UIリセット
+    document.getElementById('btn-check').style.display = 'block';
+    document.getElementById('btn-next').style.display  = 'none';
+    document.getElementById('btn-hint').style.display  = 'inline-flex';
+    setResult('empty', '');
+    document.getElementById('reward-badge').style.display = 'none';
 
-  // ランダム選択して生成（data.js の関数を使用！）
-  const template = choice(filtered);
-  currentQuestion = generateQuestion(template);
+    // 入力リセット
+    document.getElementById('f-num1').value     = '';
+    document.getElementById('f-op').value       = '?';
+    document.getElementById('f-num2').value     = '';
+    document.getElementById('f-ans-full').value = '';
+    document.getElementById('f-ans-only').value = '';
 
-  // 画面に表示
-  document.getElementById("q-text").innerText = currentQuestion.text;
+    // 入力欄の枠色リセット
+    ['f-num1','f-num2','f-ans-full','f-ans-only'].forEach(id => {
+        const el = document.getElementById(id);
+        el.style.borderColor = '';
+        el.style.background  = '';
+    });
+    document.getElementById('f-op').style.borderColor = '';
+
+    // テンプレートフィルタリング
+    let filtered = questTemplates.filter(q => q.grade === grade);
+
+    if (mode === 'train_add')    filtered = filtered.filter(q => q.operation === 'add');
+    if (mode === 'train_sub')    filtered = filtered.filter(q => q.operation === 'sub');
+    if (mode === 'train_mul')    filtered = filtered.filter(q => q.operation === 'mul');
+    if (mode === 'train_div')    filtered = filtered.filter(q => q.operation === 'div');
+    if (mode === 'train_addsub') filtered = filtered.filter(q => q.operation === 'add' || q.operation === 'sub');
+
+    // caveモード：まちがえた問題のテンプレートIDで絞る
+    if (mode === 'cave') {
+        const mistakes = load('saved_mistakes', []);
+        const mistakeIds = mistakes.map(m => m.templateId);
+        filtered = filtered.filter(q => mistakeIds.includes(q.id));
+
+        if (filtered.length === 0) {
+            showCaveEmpty();
+            return;
+        }
+    }
+
+    if (!filtered || filtered.length === 0) {
+        document.getElementById('q-text').innerText = 'もんだいが みつかりませんでした😢';
+        return;
+    }
+
+    const template = choice(filtered);
+    currentQuestion = generateQuestion(template);
+
+    document.getElementById('q-text').innerText = currentQuestion.text;
+
+    // 学年によって入力UI切り替え
+    const useFullFormula = grade >= 2;
+    document.getElementById('formula-full').style.display     = useFullFormula ? 'flex' : 'none';
+    document.getElementById('formula-ans-only').style.display = useFullFormula ? 'none' : 'flex';
+    document.getElementById('formula-label').innerText        = useFullFormula
+        ? '✏️ しきと こたえを いれよう'
+        : '✏️ こたえを いれよう';
+
+    // 答え入力欄にフォーカス
+    setTimeout(() => {
+        const focusTarget = useFullFormula
+            ? document.getElementById('f-ans-full')
+            : document.getElementById('f-ans-only');
+        focusTarget.focus();
+    }, 100);
 }
 
-// ------------------------
-// 答え合わせ（式と答えの両方をチェック）
-// ------------------------
+// ========================================
+// caveモード：まちがいなし表示
+// ========================================
+function showCaveEmpty() {
+    document.getElementById('question-card').innerHTML = `
+        <div class="cave-empty">
+            <div class="cave-empty-icon">🎉</div>
+            <div class="cave-empty-text">まちがえた もんだいは ないよ！</div>
+            <div class="cave-empty-sub">ぜんぶ せいかいだったね！すごい！</div>
+        </div>
+    `;
+    document.getElementById('formula-card').style.display = 'none';
+    document.getElementById('btn-check').style.display    = 'none';
+    document.getElementById('btn-hint').style.display     = 'none';
+}
+
+// ========================================
+// 答え合わせ
+// ========================================
 function checkAnswer() {
-  if (isAnswered) return; // 連続タップ防止
+    if (isAnswered) return;
 
-  const uNum1 = Number(document.getElementById("f-num1").value);
-  const uOp = document.getElementById("f-op").value;
-  const uNum2 = Number(document.getElementById("f-num2").value);
-  const uAns = Number(document.getElementById("f-ans").value);
-  const resultText = document.getElementById("result");
+    const useFullFormula = grade >= 2;
+    const uAns = useFullFormula
+        ? Number(document.getElementById('f-ans-full').value)
+        : Number(document.getElementById('f-ans-only').value);
 
-  // 正解の記号を判定
-  let correctOp = "?";
-  if (currentQuestion.operation === "add") correctOp = "+";
-  if (currentQuestion.operation === "sub") correctOp = "-";
-  if (currentQuestion.operation === "mul") correctOp = "×";
-  if (currentQuestion.operation === "div") correctOp = "÷";
+    // 答え未入力チェック
+    const ansField = useFullFormula
+        ? document.getElementById('f-ans-full')
+        : document.getElementById('f-ans-only');
+    if (ansField.value === '') {
+        setResult('partial', '⚠️ こたえを いれてね！');
+        ansField.focus();
+        return;
+    }
 
-  // たし算・かけ算は数字が逆でもOKにする（例：3+4 と 4+3）
-  let isFormulaCorrect = false;
-  if (currentQuestion.operation === "add" || currentQuestion.operation === "mul") {
-      isFormulaCorrect = (uOp === correctOp) && 
-                         ((uNum1 === currentQuestion.num1 && uNum2 === currentQuestion.num2) || 
-                          (uNum1 === currentQuestion.num2 && uNum2 === currentQuestion.num1));
-  } else {
-      // ひき算・わり算は順番通りじゃないとダメ
-      isFormulaCorrect = (uOp === correctOp && uNum1 === currentQuestion.num1 && uNum2 === currentQuestion.num2);
-  }
+    const correctOp = { add:'+', sub:'-', mul:'×', div:'÷' }[currentQuestion.operation];
 
-  // 判定処理
-  if (isFormulaCorrect && uAns === currentQuestion.answer) {
-    resultText.innerHTML = "🎉 大せいかい！ 式もバッチリ！";
-    resultText.style.color = "#2e7d32";
-    saveReward(); // コインと経験値を付与
-    isAnswered = true;
-    
-    // ボタンの切り替え
-    document.getElementById("btn-answer").style.display = "none";
-    document.getElementById("btn-next").style.display = "block";
-  } else if (uAns === currentQuestion.answer) {
-    resultText.innerHTML = "⚠️ 答えは合ってるけど、式がちがうみたい…？";
-    resultText.style.color = "#f57c00";
-  } else {
-    resultText.innerHTML = "❌ もういちど 考えてみよう！";
-    resultText.style.color = "#c62828";
-  }
+    let isFormulaCorrect = true; // 1年生はチェックしない
+
+    if (useFullFormula) {
+        const uNum1 = Number(document.getElementById('f-num1').value);
+        const uOp   = document.getElementById('f-op').value;
+        const uNum2 = Number(document.getElementById('f-num2').value);
+
+        // 交換法則（たし算・かけ算）
+        if (currentQuestion.operation === 'add' || currentQuestion.operation === 'mul') {
+            isFormulaCorrect = uOp === correctOp &&
+                ((uNum1 === currentQuestion.num1 && uNum2 === currentQuestion.num2) ||
+                 (uNum1 === currentQuestion.num2 && uNum2 === currentQuestion.num1));
+        } else {
+            isFormulaCorrect = uOp === correctOp &&
+                uNum1 === currentQuestion.num1 &&
+                uNum2 === currentQuestion.num2;
+        }
+    }
+
+    const isAnsCorrect = uAns === currentQuestion.answer;
+
+    if (isFormulaCorrect && isAnsCorrect) {
+        // ✅ 大正解
+        const bonus = !hintUsed ? '⭐ ヒントなし！' : '';
+        setResult('correct', `🎉 だいせいかい！ ${bonus}`);
+        saveReward(hintUsed ? 1 : 2); // ヒントなしは+2EXP
+        isAnswered = true;
+        removeMistake(currentQuestion.templateId);
+
+        document.getElementById('btn-check').style.display = 'none';
+        document.getElementById('btn-hint').style.display  = 'none';
+        setTimeout(() => {
+            document.getElementById('btn-next').style.display = 'block';
+        }, 1200);
+
+    } else if (!useFullFormula && isAnsCorrect) {
+        // 1年生：答えだけ正解
+        setResult('correct', '🎉 だいせいかい！');
+        saveReward(hintUsed ? 1 : 2);
+        isAnswered = true;
+        removeMistake(currentQuestion.templateId);
+
+        document.getElementById('btn-check').style.display = 'none';
+        document.getElementById('btn-hint').style.display  = 'none';
+        setTimeout(() => {
+            document.getElementById('btn-next').style.display = 'block';
+        }, 1200);
+
+    } else if (useFullFormula && isAnsCorrect && !isFormulaCorrect) {
+        // 答えは合ってるが式が違う
+        setResult('partial', '⚠️ こたえは あってるけど しきが ちがうよ！');
+        highlightWrongFormula();
+        saveMistake(currentQuestion);
+
+    } else {
+        // ❌ 不正解
+        setResult('wrong', `❌ もういちど かんがえてみよう！`, `こたえは ${currentQuestion.answer} だったよ`);
+        saveMistake(currentQuestion);
+    }
 }
 
-// ------------------------
-// 報酬のセーブ機能
-// ------------------------
-function saveReward() {
-  let exp = parseInt(localStorage.getItem('saved_exp')) || 0;
-  let coin = parseInt(localStorage.getItem('saved_coin')) || 10;
-  let solvedCount = parseInt(localStorage.getItem('saved_solved_count')) || 0;
-  let level = parseInt(localStorage.getItem('saved_level')) || 1;
-
-  exp += 1;
-  coin += 1;
-  solvedCount += 1;
-
-  // レベルアップ判定（5EXPごとに1レベルアップ）
-  if (exp >= 5) {
-      exp = 0;
-      level += 1;
-      alert(`🌟 レベルアップ！ レベル ${level} になったよ！`);
-  }
-
-  localStorage.setItem('saved_exp', exp);
-  localStorage.setItem('saved_coin', coin);
-  localStorage.setItem('saved_solved_count', solvedCount);
-  localStorage.setItem('saved_level', level);
-
-  document.getElementById("coin-get").style.display = "block";
+// ========================================
+// 入力欄の強調（式が間違いのとき）
+// ========================================
+function highlightWrongFormula() {
+    ['f-num1','f-num2'].forEach(id => {
+        const el = document.getElementById(id);
+        el.style.borderColor = '#ef9a9a';
+        el.style.background  = '#ffebee';
+    });
+    document.getElementById('f-op').style.borderColor = '#ef9a9a';
 }
 
-// ------------------------
-// ヒント（問題文の色を変える）
-// ------------------------
+// ========================================
+// 結果カード表示
+// ========================================
+function setResult(type, msg, sub) {
+    const card = document.getElementById('result-card');
+    card.className = `result-card ${type}`;
+    if (type === 'empty') { card.innerHTML = ''; return; }
+    card.innerHTML = `<span>${msg}</span>${sub ? `<span class="result-answer-hint">${sub}</span>` : ''}`;
+}
+
+// ========================================
+// 報酬セーブ
+// ========================================
+function saveReward(expGain) {
+    let exp        = load('saved_exp', 0);
+    let level      = load('saved_level', 1);
+    let solved     = load('saved_solved_count', 0);
+    let pending    = load('saved_pending_items', 0);
+
+    exp    += expGain;
+    solved += 1;
+
+    // レベルアップ（5EXPごと）
+    let leveledUp = false;
+    while (exp >= 5) {
+        exp -= 5;
+        level += 1;
+        leveledUp = true;
+
+        // 5レベルごとにアイテム付与フラグ
+        if (level % 5 === 0) {
+            pending += 1;
+        }
+    }
+
+    save('saved_exp',          exp);
+    save('saved_level',        level);
+    save('saved_solved_count', solved);
+    save('saved_pending_items', pending);
+
+    // 報酬バッジ表示
+    const badge = document.getElementById('reward-badge');
+    let badgeText = `✨ EXP +${expGain}`;
+    if (leveledUp) badgeText += `　🌟 Lv.${level} になった！`;
+    badge.innerText = badgeText;
+    badge.style.display = 'block';
+}
+
+// ========================================
+// まちがい記録
+// ========================================
+function saveMistake(question) {
+    let mistakes = load('saved_mistakes', []);
+    // 同じテンプレートIDがなければ追加
+    if (!mistakes.find(m => m.templateId === question.templateId)) {
+        mistakes.push({
+            templateId: question.templateId,
+            grade:      question.grade,
+            operation:  question.operation,
+        });
+        save('saved_mistakes', mistakes);
+    }
+}
+
+function removeMistake(templateId) {
+    let mistakes = load('saved_mistakes', []);
+    mistakes = mistakes.filter(m => m.templateId !== templateId);
+    save('saved_mistakes', mistakes);
+}
+
+// ========================================
+// ヒント
+// ========================================
 function showHint() {
-  let htmlText = currentQuestion.text;
-  currentQuestion.keywords.forEach(word => {
-    htmlText = htmlText.replaceAll(word,
-      `<span style="color:#e53935; font-weight:bold; background:#ffcdd2; padding:0 3px; border-radius:3px;">${word}</span>`
-    );
-  });
-  document.getElementById("q-text").innerHTML = htmlText;
+    hintUsed = true;
+    let html = currentQuestion.text;
+    currentQuestion.keywords.forEach(word => {
+        html = html.replaceAll(word,
+            `<span style="color:#e53935; font-weight:900; background:#ffcdd2; padding:1px 4px; border-radius:4px;">${word}</span>`
+        );
+    });
+    document.getElementById('q-text').innerHTML = html;
+    document.getElementById('btn-hint').style.display = 'none';
 }
 
-function nextQuestion() {
-  loadQuestion();
-}
+// ========================================
+// 次の問題 / もどる
+// ========================================
+function nextQuestion() { loadQuestion(); }
+function goBack()       { window.location.href = 'index.html'; }
 
-function goBack() {
-  window.location.href = "index.html";
-}
+// ========================================
+// Enterキーで答え合わせ
+// ========================================
+document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+        if (!isAnswered) checkAnswer();
+        else if (document.getElementById('btn-next').style.display !== 'none') nextQuestion();
+    }
+});
 
-// 起動時に最初の問題を読み込む
-window.onload = loadQuestion;
+// ========================================
+// 起動
+// ========================================
+window.onload = function() {
+    document.getElementById('header-mode').innerText =
+        (modeLabels[mode] || mode) + '　' + grade + 'ねんせい';
+
+    if (!window.questTemplates && !window.choice) {
+        document.getElementById('q-text').innerText = 'data.js が よみこめませんでした😢';
+        return;
+    }
+    loadQuestion();
+};
 </script>
 
 </body>
