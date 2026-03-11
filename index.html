@@ -3,220 +3,1292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>冒険の拠点 - 算数クエスト</title>
+    <title>算数クエスト - 冒険の拠点</title>
     <style>
-        /* ===================================
-           全体デザイン
-        ==================================== */
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #e8f5e9; color: #333; margin: 0; padding-bottom: 50px; text-align: center; }
-        .app-title { color: #2e7d32; font-size: 2rem; margin: 15px 0; text-shadow: 2px 2px 0px #fff; }
-        
-        /* ステータスバーと記録 */
-        .status-bar { background-color: #3e2723; color: #fff; padding: 15px; display: flex; justify-content: space-around; font-size: 1.2rem; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-radius: 10px 10px 0 0; margin: 0 10px; }
-        .title-text { color: #ffd54f; font-size: 0.9em; margin-left: 5px; }
-        .record-bar { background-color: #5d4037; color: #fff; padding: 8px; font-size: 1rem; border-radius: 0 0 10px 10px; margin: 0 10px 20px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap');
 
-        #main-content { margin: 20px auto; max-width: 650px; padding: 0 10px; }
-        
-        button { font-weight: bold; padding: 12px 18px; margin: 8px; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,0.2); transition: transform 0.1s; }
-        button:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0); }
+        :root {
+            --bg: #e8f4fd;
+            --bg2: #d0eaf8;
+            --card: #ffffff;
+            --gold: #e68a00;
+            --gold2: #c97700;
+            --green: #2e9e5b;
+            --blue: #1976d2;
+            --purple: #7c3aed;
+            --red: #e53935;
+            --text: #1a2a3a;
+            --text2: #5a7080;
+            --border: rgba(30,100,180,0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(160deg, #cce8ff 0%, #e0f5e9 50%, #fff9e0 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* 雲・空っぽい背景装飾 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse 120px 60px at 10% 8%, rgba(255,255,255,0.7) 0%, transparent 100%),
+                radial-gradient(ellipse 80px 40px at 40% 5%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(ellipse 100px 50px at 75% 10%, rgba(255,255,255,0.65) 0%, transparent 100%),
+                radial-gradient(ellipse 60px 30px at 90% 6%, rgba(255,255,255,0.5) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ヘッダー */
+        .app-header {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #1565c0 0%, #0288d1 60%, #26c6da 100%);
+            border-bottom: 3px solid rgba(255,255,255,0.3);
+            padding: 18px 20px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(21,101,192,0.3);
+        }
+
+        .app-title {
+            font-family: 'Kaisei Decol', serif;
+            font-size: 1.9rem;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2), 0 0 20px rgba(255,220,100,0.4);
+            letter-spacing: 0.05em;
+        }
+
+        /* ステータス */
+        .status-card {
+            position: relative;
+            z-index: 1;
+            background: #ffffff;
+            border: 2px solid rgba(21,101,192,0.15);
+            border-radius: 16px;
+            margin: 16px 12px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 16px rgba(21,101,192,0.1);
+        }
+
+        .status-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: #1a0f2e;
+            font-weight: 900;
+            font-size: 1.1rem;
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+
+        .title-badge {
+            color: #7c3aed;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .solved-count {
+            color: var(--text2);
+            font-size: 0.85rem;
+        }
+
+        .solved-count span {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* EXPバー */
+        .exp-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exp-label {
+            font-size: 0.8rem;
+            color: var(--text2);
+            white-space: nowrap;
+        }
+
+        .exp-bar-bg {
+            flex: 1;
+            height: 14px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 7px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .exp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green), #7fff7f);
+            border-radius: 7px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .exp-text {
+            font-size: 0.8rem;
+            color: var(--green);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* アイテム入手通知 */
+        .item-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 100;
+            background: #ffffff;
+            border: 3px solid #f5a623;
+            border-radius: 20px;
+            padding: 30px 40px;
+            text-align: center;
+            box-shadow: 0 8px 40px rgba(230,138,0,0.25);
+            animation: none;
+        }
+
+        .item-popup.show {
+            display: block;
+            animation: popupIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .item-popup.rare { border-color: #1976d2; box-shadow: 0 8px 40px rgba(25,118,210,0.3); }
+        .item-popup.superrare { border-color: #f5a623; box-shadow: 0 8px 60px rgba(245,166,35,0.5); }
+
+        @keyframes popupIn {
+            from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .popup-emoji { font-size: 4rem; margin-bottom: 10px; }
+        .popup-rarity { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 6px; }
+        .popup-rarity.common { color: var(--green); }
+        .popup-rarity.rare { color: var(--blue); }
+        .popup-rarity.superrare { color: var(--gold); }
+        .popup-name { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 99;
+        }
+        .popup-overlay.show { display: block; }
+
+        .btn-popup-close {
+            background: linear-gradient(135deg, #f5a623, #e68a00);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Noto Sans JP', sans-serif;
+            box-shadow: 0 3px 8px rgba(230,138,0,0.4);
+        }
+
+        /* メインコンテンツ */
+        #main-content {
+            position: relative;
+            z-index: 1;
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        /* セクションタイトル */
+        .section-title {
+            font-family: 'Kaisei Decol', serif;
+            font-size: 1.1rem;
+            color: #1565c0;
+            margin: 24px 0 12px 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(21,101,192,0.3), transparent);
+        }
+
+        /* 学年選択 */
+        .grade-card {
+            background: #ffffff;
+            border: 2px solid rgba(21,101,192,0.15);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(21,101,192,0.1);
+            transition: border-color 0.2s;
+        }
+
+        .grade-card.open { border-color: #1976d2; }
+
+        .grade-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s;
+        }
+
+        .grade-header:hover { background: rgba(167,139,250,0.05); }
+
+        .grade-label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grade-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .grade-1 .grade-icon { background: rgba(76,175,125,0.2); }
+        .grade-2 .grade-icon { background: rgba(91,156,246,0.2); }
+        .grade-3 .grade-icon { background: rgba(167,139,250,0.2); }
+
+        .grade-chevron {
+            color: var(--text2);
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .grade-card.open .grade-chevron { transform: rotate(180deg); }
+
+        /* サブメニュー */
+        .sub-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+            border-top: 0px solid var(--border);
+        }
+
+        .grade-card.open .sub-menu {
+            max-height: 500px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sub-menu-inner { padding: 16px; }
+
+        .sub-section-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--text2);
+            margin: 14px 0 8px 2px;
+        }
+
+        .sub-section-label:first-child { margin-top: 0; }
+
+        .quest-btn {
+            display: block;
+            width: 100%;
+            padding: 13px 18px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.1s, opacity 0.1s;
+        }
+
+        .quest-btn:active { transform: scale(0.97); opacity: 0.8; }
+
+        .btn-story {
+            background: linear-gradient(135deg, #1565c0, #0288d1);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-cave {
+            background: #f5f5f5;
+            color: var(--text2);
+            border: 1px dashed #b0bec5;
+        }
+
+        .btn-train {
+            background: #e3f2fd;
+            color: var(--blue);
+            border: 1px solid rgba(25,118,210,0.3);
+            border-radius: 12px;
+            padding: 12px;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.1s, background 0.15s;
+        }
+
+        .btn-train:active { transform: scale(0.97); }
+        .btn-train:hover { background: #bbdefb; }
+
+        .btn-train-wide {
+            grid-column: span 2;
+            background: #ede7f6;
+            color: var(--purple);
+            border: 1px solid rgba(124,58,237,0.3);
+        }
+
+        .btn-train-wide:hover { background: #d1c4e9; }
+
+        /* 図鑑 */
+        .zukan-card {
+            background: #ffffff;
+            border: 2px solid rgba(21,101,192,0.15);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(21,101,192,0.1);
+            margin-bottom: 10px;
+        }
+
+        .zukan-item {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            background: #f0f7ff;
+            border: 1px solid rgba(21,101,192,0.12);
+            transition: transform 0.15s;
+            position: relative;
+        }
+
+        .zukan-item.got { background: #e8f5e9; border-color: rgba(46,158,91,0.35); }
+        .zukan-item.got:hover { transform: scale(1.15); }
+        .zukan-item.got.rare { border-color: rgba(25,118,210,0.5); background: #e3f2fd; }
+        .zukan-item.got.superrare { border-color: rgba(230,138,0,0.6); background: #fff8e1; }
+        .zukan-item.unknown { color: #c8d8e8; font-size: 1rem; }
+
+        /* 図鑑スライダー（5枚ページ式） */
+        .zukan-slider-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .zukan-arrow {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid rgba(21,101,192,0.2);
+            background: #f0f7ff;
+            color: #1565c0;
+            font-size: 1.6rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, transform 0.1s;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .zukan-arrow:hover { background: #dbeafe; }
+        .zukan-arrow:active { transform: scale(0.88); }
+        .zukan-arrow:disabled { opacity: 0.25; cursor: default; }
+
+        .zukan-slider-viewport {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .zukan-slider-track {
+            display: flex;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 1ページ = 5枚グリッド */
+        .zukan-page {
+            flex-shrink: 0;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 4px 0;
+        }
+
+        /* 各カード */
+        .zukan-card-item {
+            aspect-ratio: 3/4;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border: 2px solid rgba(21,101,192,0.12);
+            background: #f0f7ff;
+            transition: transform 0.15s;
+        }
+
+        .zukan-card-item.got { background: #e8f5e9; border-color: rgba(46,158,91,0.35); }
+        .zukan-card-item.got:hover { transform: scale(1.06); }
+        .zukan-card-item.got.rare { background: #e3f2fd; border-color: rgba(25,118,210,0.45); }
+        .zukan-card-item.got.superrare {
+            background: #fff8e1;
+            border-color: rgba(230,138,0,0.55);
+            box-shadow: 0 2px 8px rgba(230,138,0,0.15);
+        }
+
+        .zukan-card-emoji { font-size: 1.7rem; line-height: 1; }
+
+        .zukan-card-name {
+            font-size: 0.56rem;
+            font-weight: 700;
+            color: #5a7080;
+            text-align: center;
+            line-height: 1.2;
+            padding: 0 2px;
+        }
+
+        .zukan-card-rarity {
+            font-size: 0.5rem;
+            font-weight: 700;
+        }
+        .zukan-card-rarity.rare      { color: #1976d2; }
+        .zukan-card-rarity.superrare { color: #e68a00; }
+
+        /* 空きカード（？） */
+        .zukan-card-item.unknown {
+            background: #f8fafc;
+            border: 2px dashed rgba(21,101,192,0.1);
+        }
+        .zukan-card-item.unknown .zukan-card-emoji {
+            font-size: 1.2rem;
+            color: #c8d8e8;
+        }
+
+        /* ページラベル */
+        .zukan-page-label {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text2);
+            margin-bottom: 8px;
+        }
+
+        /* ドット */
+        .zukan-dots {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .zukan-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(21,101,192,0.15);
+            transition: background 0.2s, transform 0.2s;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+        }
+
+        .zukan-dot.active { background: #1976d2; transform: scale(1.35); }
+
+        /* 次のアイテムまで */
+        .next-item-hint {
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: #f0f7ff;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .next-item-bar-bg {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .next-item-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1976d2, #26c6da);
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        /* リセット */
+        .btn-reset {
+            display: block;
+            margin: 30px auto 0;
+            background: none;
+            border: 1px solid #cfd8dc;
+            color: #90a4ae;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.8rem;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
         .hidden { display: none !important; }
 
-        /* 学年選択エリア */
-        .grade-section { background-color: #fff8e1; padding: 20px; border-radius: 10px; border: 4px solid #8d6e63; margin-bottom: 30px; }
-        .grade-btn { font-size: 1.4rem; width: 90%; padding: 15px; margin: 10px auto; display: block; color: white; border: 2px solid rgba(255,255,255,0.5); }
-        .grade-1 { background-color: #66bb6a; }
-        .grade-2 { background-color: #43a047; }
-        .grade-3 { background-color: #2e7d32; }
+        /* フラッシュ演出 */
+        .flash-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 98;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
 
-        /* サブメニュー（展開時） */
-        .sub-menu { background-color: rgba(255,255,255,0.8); border-radius: 8px; padding: 15px; margin: 10px auto; width: 85%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); border: 2px dashed #8d6e63; }
-        .sub-menu h3 { margin-top: 0; color: #3e2723; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
-        
-        .btn-story { background-color: #fbc02d; color: #3e2723; width: 90%; font-size: 1.2rem; }
-        .btn-cave { background-color: #424242; color: #ffeb3b; width: 90%; font-size: 1.1rem; border: 2px dashed #ffeb3b; }
-        
-        .training-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 15px; }
-        .btn-train { background-color: #0288d1; color: white; font-size: 1rem; padding: 10px; margin: 0; }
-
-        /* ガチャ・図鑑エリア */
-        .gacha-section { background-color: #fce4ec; padding: 20px; border-radius: 10px; border: 4px dashed #f06292; margin-bottom: 30px; }
-        .btn-gacha-play { background-color: #e53935; color: white; font-size: 1.3rem; padding: 15px 30px; }
-        .gacha-display-area { font-size: 4rem; margin: 10px 0; min-height: 80px; }
-        
-        .adventure-note { background-color: #fff3e0; padding: 20px; border-radius: 5px 15px 15px 5px; border-left: 15px solid #795548; border-top: 2px solid #8d6e63; border-right: 2px solid #8d6e63; border-bottom: 2px solid #8d6e63; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); margin-bottom: 40px; }
-        .collection-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
-        .collection-item { font-size: 2.5rem; background: #fff; border: 1px solid #d7ccc8; border-radius: 5px; padding: 10px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
-        .collection-unknown { color: #e0e0e0; font-size: 2rem; display: flex; align-items: center; justify-content: center; height: 100%; }
-        .message-area { font-size: 1.2em; font-weight: bold; margin-top: 10px; min-height: 1.5em; }
-
-        /* リセットボタン */
-        .btn-reset { background-color: #9e9e9e; color: white; font-size: 0.9rem; padding: 8px 15px; border-radius: 5px; box-shadow: none; margin-top: 20px; }
-        .btn-reset:active { transform: none; }
+        .flash-overlay.flash-green { background: rgba(76,175,125,0.15); }
+        .flash-overlay.flash-blue { background: rgba(91,156,246,0.2); }
+        .flash-overlay.flash-gold { background: rgba(245,200,66,0.25); }
     </style>
 </head>
 <body>
 
-    <h1 class="app-title">⚔️ 算数クエスト ⚔️</h1>
+<div class="flash-overlay" id="flash-overlay"></div>
+<div class="popup-overlay" id="popup-overlay" onclick="closePopup()"></div>
 
-    <header id="status-bar" class="status-bar">
-        <div>🌟 Lv: <span id="disp-level">1</span> <span id="disp-title" class="title-text">（みならい）</span></div>
-        <div>⚔️ EXP: <span id="disp-exp">0</span>/5</div>
-        <div>🪙 <span id="disp-coin">10</span>枚</div>
-    </header>
-    <div class="record-bar">
-        📊 これまで といた もんだい： <span id="disp-solved" style="color: #ffd54f; font-weight: bold; font-size: 1.2em;">0</span> もん！
+<!-- アイテムポップアップ -->
+<div class="item-popup" id="item-popup">
+    <div class="popup-rarity" id="popup-rarity-text">コモン</div>
+    <div class="popup-emoji" id="popup-emoji">🐸</div>
+    <div class="popup-name" id="popup-name">カエル</div>
+    <button class="btn-popup-close" onclick="closePopup()">やったー！</button>
+</div>
+
+<!-- ヘッダー -->
+<header class="app-header">
+    <div class="app-title">⚔️ 算数クエスト</div>
+</header>
+
+<!-- ステータス -->
+<div class="status-card">
+    <div class="status-top">
+        <div>
+            <div class="level-badge">Lv. <span id="disp-level">1</span></div>
+        </div>
+        <div class="title-badge" id="disp-title">みならいの拾い屋</div>
+        <div class="solved-count">といた: <span id="disp-solved">0</span>もん</div>
     </div>
+    <div class="exp-bar-wrap">
+        <div class="exp-label">EXP</div>
+        <div class="exp-bar-bg">
+            <div class="exp-bar-fill" id="exp-bar" style="width:0%"></div>
+        </div>
+        <div class="exp-text" id="exp-text">0/5</div>
+    </div>
+</div>
 
-    <main id="main-content">
+<main id="main-content">
 
-        <section class="grade-section">
-            <h2 style="color: #3e2723; margin-top: 0;">🗺️ どのレベルに ちょうせんする？</h2>
-            
-            <button class="grade-btn grade-1" onclick="toggleMenu('menu-grade1')">🌱 1年生（たしざん・ひきざん）</button>
-            <div id="menu-grade1" class="sub-menu hidden">
-                <h3>🌱 1年生のぼうけん</h3>
-                <button class="btn-story" onclick="goToQuest('quest.html?grade=1&mode=story')">⚔️ ストーリークエスト (基本)</button>
-                <h4 style="margin: 15px 0 5px 0; color:#0288d1;">🎯 訓練場（ニガテとっくん）</h4>
-                <div class="training-grid">
+    <!-- 学年選択 -->
+    <div class="section-title">🗺️ ぼうけんにでかける</div>
+
+    <!-- 1年生 -->
+    <div class="grade-card grade-1" id="card-grade1">
+        <div class="grade-header" onclick="toggleGrade('card-grade1')">
+            <div class="grade-label">
+                <div class="grade-icon">🌱</div>
+                1ねんせい（たしざん・ひきざん）
+            </div>
+            <div class="grade-chevron">▼</div>
+        </div>
+        <div class="sub-menu">
+            <div class="sub-menu-inner">
+                <div class="sub-section-label">⚔️ ストーリークエスト</div>
+                <button class="quest-btn btn-story" onclick="goToQuest('quest.html?grade=1&mode=story')">
+                    ⚔️ ぼうけんにでかける（きほん）
+                </button>
+                <div class="sub-section-label">🎯 とっくん（にがてをせめる）</div>
+                <div class="train-grid">
                     <button class="btn-train" onclick="goToQuest('quest.html?grade=1&mode=train_add')">＋ たしざん</button>
                     <button class="btn-train" onclick="goToQuest('quest.html?grade=1&mode=train_sub')">－ ひきざん</button>
                 </div>
-                <h4 style="margin: 15px 0 5px 0; color:#424242;">🕳 修行の洞くつ（まちがい直し）</h4>
-                <button class="btn-cave" onclick="goToQuest('quest.html?grade=1&mode=cave')">🕳 まちがえた問題をやりなおす</button>
+                <div class="sub-section-label">🕳 まちがいなおし</div>
+                <button class="quest-btn btn-cave" onclick="goToQuest('quest.html?grade=1&mode=cave')">
+                    🕳 まちがえた もんだいをやりなおす
+                </button>
             </div>
+        </div>
+    </div>
 
-            <button class="grade-btn grade-2" onclick="toggleMenu('menu-grade2')">🌿 2年生（＋ かけざん）</button>
-            <div id="menu-grade2" class="sub-menu hidden">
-                <h3>🌿 2年生のぼうけん</h3>
-                <button class="btn-story" onclick="goToQuest('quest.html?grade=2&mode=story')">⚔️ ストーリークエスト (基本)</button>
-                <h4 style="margin: 15px 0 5px 0; color:#0288d1;">🎯 訓練場（ニガテとっくん）</h4>
-                <div class="training-grid">
+    <!-- 2年生 -->
+    <div class="grade-card grade-2" id="card-grade2">
+        <div class="grade-header" onclick="toggleGrade('card-grade2')">
+            <div class="grade-label">
+                <div class="grade-icon">🌿</div>
+                2ねんせい（＋かけざん）
+            </div>
+            <div class="grade-chevron">▼</div>
+        </div>
+        <div class="sub-menu">
+            <div class="sub-menu-inner">
+                <div class="sub-section-label">⚔️ ストーリークエスト</div>
+                <button class="quest-btn btn-story" onclick="goToQuest('quest.html?grade=2&mode=story')">
+                    ⚔️ ぼうけんにでかける（きほん）
+                </button>
+                <div class="sub-section-label">🎯 とっくん（にがてをせめる）</div>
+                <div class="train-grid">
                     <button class="btn-train" onclick="goToQuest('quest.html?grade=2&mode=train_add')">＋ たしざん</button>
                     <button class="btn-train" onclick="goToQuest('quest.html?grade=2&mode=train_sub')">－ ひきざん</button>
-                    <button class="btn-train" style="grid-column: span 2;" onclick="goToQuest('quest.html?grade=2&mode=train_mul')">× かけざん</button>
+                    <button class="btn-train btn-train-wide" onclick="goToQuest('quest.html?grade=2&mode=train_mul')">× かけざん</button>
                 </div>
-                <button class="btn-cave" onclick="goToQuest('quest.html?grade=2&mode=cave')">🕳 修行の洞くつへ</button>
+                <div class="sub-section-label">🕳 まちがいなおし</div>
+                <button class="quest-btn btn-cave" onclick="goToQuest('quest.html?grade=2&mode=cave')">
+                    🕳 まちがえた もんだいをやりなおす
+                </button>
             </div>
+        </div>
+    </div>
 
-            <button class="grade-btn grade-3" onclick="toggleMenu('menu-grade3')">🌳 3年生（＋ わりざん）</button>
-            <div id="menu-grade3" class="sub-menu hidden">
-                <h3>🌳 3年生のぼうけん</h3>
-                <button class="btn-story" onclick="goToQuest('quest.html?grade=3&mode=story')">⚔️ ストーリークエスト (基本)</button>
-                <h4 style="margin: 15px 0 5px 0; color:#0288d1;">🎯 訓練場（ニガテとっくん）</h4>
-                <div class="training-grid">
+    <!-- 3年生 -->
+    <div class="grade-card grade-3" id="card-grade3">
+        <div class="grade-header" onclick="toggleGrade('card-grade3')">
+            <div class="grade-label">
+                <div class="grade-icon">🌳</div>
+                3ねんせい（＋わりざん）
+            </div>
+            <div class="grade-chevron">▼</div>
+        </div>
+        <div class="sub-menu">
+            <div class="sub-menu-inner">
+                <div class="sub-section-label">⚔️ ストーリークエスト</div>
+                <button class="quest-btn btn-story" onclick="goToQuest('quest.html?grade=3&mode=story')">
+                    ⚔️ ぼうけんにでかける（きほん）
+                </button>
+                <div class="sub-section-label">🎯 とっくん（にがてをせめる）</div>
+                <div class="train-grid">
                     <button class="btn-train" onclick="goToQuest('quest.html?grade=3&mode=train_addsub')">＋－ たし・ひき</button>
                     <button class="btn-train" onclick="goToQuest('quest.html?grade=3&mode=train_mul')">× かけざん</button>
-                    <button class="btn-train" style="grid-column: span 2; background-color: #7b1fa2;" onclick="goToQuest('quest.html?grade=3&mode=train_div')">÷ わりざん</button>
+                    <button class="btn-train btn-train-wide" style="color: #c084fc; border-color: rgba(192,132,252,0.3); background: rgba(192,132,252,0.1);" onclick="goToQuest('quest.html?grade=3&mode=train_div')">÷ わりざん</button>
                 </div>
-                <button class="btn-cave" onclick="goToQuest('quest.html?grade=3&mode=cave')">🕳 修行の洞くつへ</button>
+                <div class="sub-section-label">🕳 まちがいなおし</div>
+                <button class="quest-btn btn-cave" onclick="goToQuest('quest.html?grade=3&mode=cave')">
+                    🕳 まちがえた もんだいをやりなおす
+                </button>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section class="gacha-section">
-            <h2 style="margin-top: 0; color: #c2185b;">🎁 トレジャーガチャ</h2>
-            <p style="font-size:0.9rem; color:#666;">どりょくの結晶（コイン）でお宝をゲット！</p>
-            <div class="gacha-display-area"><div id="gacha-result-emoji">❓</div></div>
-            <button class="btn-gacha-play" onclick="playGacha()">ガチャをまわす（10🪙）</button>
-            <div id="gacha-message" class="message-area"></div>
-        </section>
+    <!-- 図鑑 -->
+    <div class="section-title">📖 ひみつの ずかん</div>
+    <div class="zukan-card">
+        <div class="zukan-progress">
+            <div class="zukan-count">あつめた: <span id="zukan-count">0</span> / 50</div>
+            <div style="font-size:0.8rem; color: var(--text2);">5レベルごとに 1つゲット！</div>
+        </div>
+        <div class="zukan-slider-wrap">
+            <button class="zukan-arrow zukan-arrow-left" onclick="slideZukan(-1)">&#8249;</button>
+            <div class="zukan-slider-viewport" id="zukan-viewport">
+                <div class="zukan-slider-track" id="zukan-track"></div>
+            </div>
+            <button class="zukan-arrow zukan-arrow-right" onclick="slideZukan(1)">&#8250;</button>
+        </div>
+        <div class="zukan-dots" id="zukan-dots"></div>
+        <div class="zukan-page-label" id="zukan-page-label">1 / 10</div>
+        <div class="next-item-hint">
+            <span>つぎまで</span>
+            <div class="next-item-bar-bg">
+                <div class="next-item-bar-fill" id="next-item-bar" style="width:0%"></div>
+            </div>
+            <span id="next-item-text" style="font-size:0.8rem; color: #1976d2;">Lv.5で！</span>
+        </div>
+    </div>
 
-        <section class="adventure-note">
-            <h2 style="margin-top: 0; color: #5d4037; border-bottom: 2px dotted #8d6e63; padding-bottom: 10px;">📖 冒険ノート</h2>
-            <p style="font-size: 0.9rem; color: #757575;">あつめた お宝や 生き物たちが きろくされるぞ！</p>
-            <div id="collection-grid" class="collection-grid"></div>
-        </section>
+    <button class="btn-reset" onclick="resetData()">⚙️ データをさいしょからにする</button>
 
-        <button class="btn-reset" onclick="resetData()">⚙️ ぼうけんの データを さいしょから にする</button>
+</main>
 
-    </main>
+<script>
+// ========================================
+// 称号データ（Lv1〜100）
+// ========================================
+const titles = [
+    { lv: 1,   name: "みならいの 拾い屋" },
+    { lv: 2,   name: "草原の 探索者" },
+    { lv: 3,   name: "小さな 冒険家" },
+    { lv: 4,   name: "森の 歩き手" },
+    { lv: 5,   name: "遺跡の 発掘士" },
+    { lv: 6,   name: "丘の 見張り番" },
+    { lv: 7,   name: "荒野の 旅人" },
+    { lv: 8,   name: "川辺の 採集師" },
+    { lv: 9,   name: "洞くつの 探検家" },
+    { lv: 10,  name: "砂漠の 渡り鳥" },
+    { lv: 11,  name: "地図の 描き手" },
+    { lv: 12,  name: "宝の 嗅ぎ手" },
+    { lv: 13,  name: "岩山の 登り手" },
+    { lv: 14,  name: "密林の 道案内" },
+    { lv: 15,  name: "海辺の 漂流者" },
+    { lv: 16,  name: "古代の 発見士" },
+    { lv: 17,  name: "雪山の 踏み跡" },
+    { lv: 18,  name: "闇の 灯火" },
+    { lv: 19,  name: "砂金の 洗い師" },
+    { lv: 20,  name: "名うての 探索者" },
+    { lv: 21,  name: "秘境の 案内人" },
+    { lv: 22,  name: "宝器の 鑑定士" },
+    { lv: 23,  name: "迷宮の 攻略者" },
+    { lv: 24,  name: "夜霧の 斥候" },
+    { lv: 25,  name: "星読みの 旅人" },
+    { lv: 26,  name: "双剣の 発掘師" },
+    { lv: 27,  name: "古地図の 解読者" },
+    { lv: 28,  name: "砂嵐の 踏破者" },
+    { lv: 29,  name: "黒曜の 採掘士" },
+    { lv: 30,  name: "熟練の トレジャーハンター" },
+    { lv: 31,  name: "銀の 探索師" },
+    { lv: 32,  name: "岩窟の 猛者" },
+    { lv: 33,  name: "秘宝の 守り人" },
+    { lv: 34,  name: "霧海の 航路師" },
+    { lv: 35,  name: "天空の 探検者" },
+    { lv: 36,  name: "炎峰の 踏み手" },
+    { lv: 37,  name: "深海の 潜水士" },
+    { lv: 38,  name: "風読みの 遊撃手" },
+    { lv: 39,  name: "月光の 測量師" },
+    { lv: 40,  name: "鉄壁の 発掘王" },
+    { lv: 41,  name: "氷河の 征服者" },
+    { lv: 42,  name: "竜骨の 研究者" },
+    { lv: 43,  name: "魔鉱の 採取師" },
+    { lv: 44,  name: "奈落の 覗き手" },
+    { lv: 45,  name: "聖遺の 護衛士" },
+    { lv: 46,  name: "暁霧の 狩人" },
+    { lv: 47,  name: "封印の 解読者" },
+    { lv: 48,  name: "異界の 渡り手" },
+    { lv: 49,  name: "覇者への 挑戦者" },
+    { lv: 50,  name: "黄金の トレジャーハンター" },
+    { lv: 51,  name: "神秘の 遺産探し" },
+    { lv: 52,  name: "禁断の 発掘師" },
+    { lv: 53,  name: "千里の 探索者" },
+    { lv: 54,  name: "虚空の 案内人" },
+    { lv: 55,  name: "古王国の 継承者" },
+    { lv: 56,  name: "幻獣の 追い手" },
+    { lv: 57,  name: "時渡りの 冒険者" },
+    { lv: 58,  name: "深淵の 踏破者" },
+    { lv: 59,  name: "神域の 発見者" },
+    { lv: 60,  name: "覇王の トレジャーハンター" },
+    { lv: 61,  name: "宙の 地図師" },
+    { lv: 62,  name: "運命の 羅針盤" },
+    { lv: 63,  name: "終焉の 探索者" },
+    { lv: 64,  name: "永久の 旅人" },
+    { lv: 65,  name: "黎明の 覇者" },
+    { lv: 66,  name: "天地の 開拓者" },
+    { lv: 67,  name: "伝説の 道案内" },
+    { lv: 68,  name: "星屑の 採集師" },
+    { lv: 69,  name: "超越の 発掘王" },
+    { lv: 70,  name: "神話の トレジャーハンター" },
+    { lv: 71,  name: "聖域の 踏み手" },
+    { lv: 72,  name: "無限の 探索者" },
+    { lv: 73,  name: "宇宙の 冒険家" },
+    { lv: 74,  name: "創世の 羅針盤" },
+    { lv: 75,  name: "至高の 発見者" },
+    { lv: 76,  name: "魔王を 超えし者" },
+    { lv: 77,  name: "神々の 探索士" },
+    { lv: 78,  name: "永遠の 旅人" },
+    { lv: 79,  name: "究極の 覇者" },
+    { lv: 80,  name: "不滅の トレジャーハンター" },
+    { lv: 81,  name: "古代神の 発掘師" },
+    { lv: 82,  name: "宇宙樹の 案内人" },
+    { lv: 83,  name: "時空の 踏破者" },
+    { lv: 84,  name: "万物の 探索者" },
+    { lv: 85,  name: "奇跡の 羅針盤" },
+    { lv: 86,  name: "天命の 継承者" },
+    { lv: 87,  name: "神核の 守護者" },
+    { lv: 88,  name: "永劫の 発掘王" },
+    { lv: 89,  name: "光輝の 覇者" },
+    { lv: 90,  name: "伝説の トレジャーハンター" },
+    { lv: 91,  name: "創造の 発見者" },
+    { lv: 92,  name: "星命の 探索師" },
+    { lv: 93,  name: "聖剣の 継承者" },
+    { lv: 94,  name: "世界樹の 守り手" },
+    { lv: 95,  name: "神代の 踏み手" },
+    { lv: 96,  name: "万能の 冒険家" },
+    { lv: 97,  name: "輪廻の 案内人" },
+    { lv: 98,  name: "宇宙の 覇者" },
+    { lv: 99,  name: "全知の 発掘王" },
+    { lv: 100, name: "✨ 最強の トレジャーハンター ✨" },
+];
 
-    <script>
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            if (type === 'click') { osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
-            else if (type === 'gacha') { osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(880, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.5); }
+// ========================================
+// アイテムデータ（50種）
+// ========================================
+const allItems = [
+    // コモン（35種）
+    { id:1,  emoji:"🐸", name:"カエル",         rarity:"common" },
+    { id:2,  emoji:"🐝", name:"ミツバチ",        rarity:"common" },
+    { id:3,  emoji:"🦎", name:"トカゲ",          rarity:"common" },
+    { id:4,  emoji:"🍄", name:"キノコ",          rarity:"common" },
+    { id:5,  emoji:"🌿", name:"やくそう",         rarity:"common" },
+    { id:6,  emoji:"🪨", name:"ふつうの石",       rarity:"common" },
+    { id:7,  emoji:"🌰", name:"どんぐり",         rarity:"common" },
+    { id:8,  emoji:"🦋", name:"チョウ",           rarity:"common" },
+    { id:9,  emoji:"🐌", name:"カタツムリ",        rarity:"common" },
+    { id:10, emoji:"🌸", name:"さくらの花びら",    rarity:"common" },
+    { id:11, emoji:"🪶", name:"はね",             rarity:"common" },
+    { id:12, emoji:"🐠", name:"サカナ",           rarity:"common" },
+    { id:13, emoji:"🦔", name:"ハリネズミ",        rarity:"common" },
+    { id:14, emoji:"🌊", name:"うみの かけら",     rarity:"common" },
+    { id:15, emoji:"🍀", name:"よつばのクローバー", rarity:"common" },
+    { id:16, emoji:"🪵", name:"ふるい木のかけら",  rarity:"common" },
+    { id:17, emoji:"🌙", name:"月のかけら",        rarity:"common" },
+    { id:18, emoji:"⭐", name:"流れ星のかけら",    rarity:"common" },
+    { id:19, emoji:"🐾", name:"けものの足あと",    rarity:"common" },
+    { id:20, emoji:"🦊", name:"キツネ",           rarity:"common" },
+    { id:21, emoji:"🐺", name:"オオカミ",          rarity:"common" },
+    { id:22, emoji:"🦅", name:"タカ",             rarity:"common" },
+    { id:23, emoji:"🌺", name:"ひみつのはな",      rarity:"common" },
+    { id:24, emoji:"🪙", name:"古いコイン",        rarity:"common" },
+    { id:25, emoji:"🗺️", name:"古い地図",          rarity:"common" },
+    { id:26, emoji:"🏺", name:"古代のつぼ",        rarity:"common" },
+    { id:27, emoji:"🔮", name:"水晶玉",           rarity:"common" },
+    { id:28, emoji:"🗝️", name:"なぞのカギ",        rarity:"common" },
+    { id:29, emoji:"🎴", name:"絵札",             rarity:"common" },
+    { id:30, emoji:"🧭", name:"コンパス",          rarity:"common" },
+    { id:31, emoji:"🪄", name:"まほうのつえ",      rarity:"common" },
+    { id:32, emoji:"🛡️", name:"小さな盾",          rarity:"common" },
+    { id:33, emoji:"🏹", name:"弓と矢",           rarity:"common" },
+    { id:34, emoji:"⚗️", name:"錬金術のビン",      rarity:"common" },
+    { id:35, emoji:"📜", name:"古いまきもの",       rarity:"common" },
+    // レア（10種）
+    { id:36, emoji:"🐉", name:"ドラゴン",          rarity:"rare" },
+    { id:37, emoji:"🦄", name:"ユニコーン",         rarity:"rare" },
+    { id:38, emoji:"🔱", name:"トライデント",       rarity:"rare" },
+    { id:39, emoji:"⚔️", name:"ひかりの剣",         rarity:"rare" },
+    { id:40, emoji:"🧿", name:"まよけのお守り",     rarity:"rare" },
+    { id:41, emoji:"🏔️", name:"神秘の山",           rarity:"rare" },
+    { id:42, emoji:"🌋", name:"炎の石",             rarity:"rare" },
+    { id:43, emoji:"❄️", name:"こおりの結晶",       rarity:"rare" },
+    { id:44, emoji:"⚡", name:"いなずまのかけら",   rarity:"rare" },
+    { id:45, emoji:"🌈", name:"虹の宝石",           rarity:"rare" },
+    // スーパーレア（5種）
+    { id:46, emoji:"👑", name:"おうさまの王冠",     rarity:"superrare" },
+    { id:47, emoji:"💎", name:"伝説のダイヤ",       rarity:"superrare" },
+    { id:48, emoji:"🌟", name:"星の欠片",           rarity:"superrare" },
+    { id:49, emoji:"🐲", name:"神龍",               rarity:"superrare" },
+    { id:50, emoji:"🏆", name:"究極のトロフィー",   rarity:"superrare" },
+];
+
+// ========================================
+// サウンド
+// ========================================
+let audioCtx = null;
+function getAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+}
+
+function playSound(type) {
+    try {
+        const ctx = getAudio();
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        if (type === 'click') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(700, ctx.currentTime);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+            osc.start(); osc.stop(ctx.currentTime + 0.1);
+        } else if (type === 'item_common') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, ctx.currentTime);
+            osc.frequency.linearRampToValueAtTime(660, ctx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+            osc.start(); osc.stop(ctx.currentTime + 0.4);
+        } else if (type === 'item_rare') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523, ctx.currentTime);
+            osc.frequency.linearRampToValueAtTime(1047, ctx.currentTime + 0.5);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+            osc.start(); osc.stop(ctx.currentTime + 0.6);
+        } else if (type === 'item_superrare') {
+            // 和音っぽく2音
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.connect(gain2); gain2.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523, ctx.currentTime);
+            osc.frequency.linearRampToValueAtTime(1047, ctx.currentTime + 0.8);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(659, ctx.currentTime);
+            osc2.frequency.linearRampToValueAtTime(1318, ctx.currentTime + 0.8);
+            gain2.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
+            osc.start(); osc.stop(ctx.currentTime + 0.9);
+            osc2.start(); osc2.stop(ctx.currentTime + 0.9);
+            return;
         }
+    } catch(e) {}
+}
 
-        // --- セーブデータ管理（バグ修正版！） ---
-        let rawLevel = localStorage.getItem('saved_level');
-        let level = rawLevel !== null ? parseInt(rawLevel) : 1;
+// ========================================
+// セーブデータ読み込み
+// ========================================
+function load(key, def) {
+    const v = localStorage.getItem(key);
+    return v !== null ? JSON.parse(v) : def;
+}
+function save(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
+}
 
-        let rawExp = localStorage.getItem('saved_exp');
-        let exp = rawExp !== null ? parseInt(rawExp) : 0;
+let level      = load('saved_level', 1);
+let exp        = load('saved_exp', 0);
+let solvedCount= load('saved_solved_count', 0);
+let collectedIds = load('saved_collection', []);
+// アイテムの配布順（シャッフル済み）
+let itemOrder  = load('saved_item_order', null);
+if (!itemOrder) {
+    itemOrder = shuffleArray(allItems.map(i => i.id));
+    save('saved_item_order', itemOrder);
+}
+// 次に配布するアイテムのインデックス
+let nextItemIndex = load('saved_next_item_index', 0);
 
-        let rawCoin = localStorage.getItem('saved_coin');
-        let coin = rawCoin !== null ? parseInt(rawCoin) : 10; // 0コインの時に10に戻らないように修正
+// ========================================
+// シャッフル
+// ========================================
+function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
 
-        let rawSolved = localStorage.getItem('saved_solved_count');
-        let solvedCount = rawSolved !== null ? parseInt(rawSolved) : 0;
+// ========================================
+// 称号取得
+// ========================================
+function getTitle(lv) {
+    const capped = Math.min(lv, 100);
+    let t = titles[0].name;
+    for (let i = 0; i < titles.length; i++) {
+        if (capped >= titles[i].lv) t = titles[i].name;
+    }
+    return t;
+}
 
-        let myCollectionIds = JSON.parse(localStorage.getItem('saved_collection')) || [];
-        
-        const titles = [{ lv: 1, name: "みならい冒険家" }, { lv: 2, name: "かけだしの旅人" }, { lv: 3, name: "いっぱしの戦士" }, { lv: 4, name: "ベテラン探索者" }];
-        const gachaItems = [{ id: 1, emoji: "🐸" }, { id: 2, emoji: "🪙" }, { id: 3, emoji: "🗡️" }, { id: 4, emoji: "🦅" }, { id: 5, emoji: "🐉" }, { id: 6, emoji: "👑" }, { id: 7, emoji: "💎" }, { id: 8, emoji: "🦄" }];
+// ========================================
+// 画面更新
+// ========================================
+function updateStatus() {
+    document.getElementById('disp-level').innerText = level;
+    document.getElementById('disp-title').innerText = getTitle(level);
+    document.getElementById('disp-solved').innerText = solvedCount;
 
-        function updateStatus() {
-            document.getElementById("disp-level").innerText = level;
-            document.getElementById("disp-exp").innerText = exp;
-            document.getElementById("disp-coin").innerText = coin;
-            document.getElementById("disp-solved").innerText = solvedCount;
+    const pct = (exp / 5) * 100;
+    document.getElementById('exp-bar').style.width = pct + '%';
+    document.getElementById('exp-text').innerText = exp + '/5';
 
-            let currentTitle = titles[0].name;
-            for(let i=0; i<titles.length; i++){ if(level >= titles[i].lv) currentTitle = titles[i].name; }
-            document.getElementById("disp-title").innerText = "（" + currentTitle + "）";
+    // 次のアイテムまで
+    const levelsToNext = 5 - (level % 5 === 0 ? 5 : level % 5);
+    const nextItemLevel = level + levelsToNext;
+    const progressInCycle = (level % 5 === 0) ? 5 : (level % 5);
+    const pctNext = (progressInCycle / 5) * 100;
+    document.getElementById('next-item-bar').style.width = pctNext + '%';
+    document.getElementById('next-item-text').innerText = `Lv.${nextItemLevel}で！`;
 
-            localStorage.setItem('saved_level', level); 
-            localStorage.setItem('saved_exp', exp); 
-            localStorage.setItem('saved_coin', coin); 
-            localStorage.setItem('saved_solved_count', solvedCount); 
-            localStorage.setItem('saved_collection', JSON.stringify(myCollectionIds));
-        }
+    save('saved_level', level);
+    save('saved_exp', exp);
+    save('saved_solved_count', solvedCount);
+    save('saved_collection', collectedIds);
+    save('saved_next_item_index', nextItemIndex);
+}
 
-        function toggleMenu(menuId) {
-            playSound('click');
-            document.querySelectorAll('.sub-menu').forEach(menu => { if(menu.id !== menuId) menu.classList.add('hidden'); });
-            document.getElementById(menuId).classList.toggle('hidden');
-        }
+// ========================================
+// 図鑑スライダー（5枚ページ式）
+// ========================================
+const ITEMS_PER_PAGE = 5;
+let zukanPage = 0;
 
-        function goToQuest(url) {
-            playSound('click');
-            setTimeout(() => { window.location.href = url; }, 150);
-        }
+function buildZukanSlider() {
+    const track  = document.getElementById('zukan-track');
+    const dotsEl = document.getElementById('zukan-dots');
+    track.innerHTML  = '';
+    dotsEl.innerHTML = '';
 
-        function playGacha() {
-            if (coin < 10) { document.getElementById("gacha-message").innerText = "コインが足りないよ！"; document.getElementById("gacha-message").style.color = "#d32f2f"; return; }
-            playSound('gacha'); coin -= 10;
-            let item = gachaItems[Math.floor(Math.random() * gachaItems.length)];
-            document.getElementById("gacha-result-emoji").innerText = item.emoji;
-            document.getElementById("gacha-message").innerText = "お宝ゲット！"; document.getElementById("gacha-message").style.color = "#2e7d32";
-            if (!myCollectionIds.includes(item.id)) myCollectionIds.push(item.id);
-            updateStatus(); updateCollectionGrid();
-        }
+    // 入手済みアイテムを入手順に並べる
+    const gotItems = collectedIds
+        .map(id => allItems.find(i => i.id === id))
+        .filter(Boolean);
 
-        function updateCollectionGrid() {
-            let grid = document.getElementById("collection-grid"); grid.innerHTML = "";
-            gachaItems.forEach(item => {
-                let div = document.createElement("div"); div.className = "collection-item";
-                if (myCollectionIds.includes(item.id)) div.innerText = item.emoji; else div.innerHTML = "<span class='collection-unknown'>？</span>";
-                grid.appendChild(div);
-            });
-        }
+    document.getElementById('zukan-count').innerText = gotItems.length;
 
-        // --- データリセット機能 ---
-        function resetData() {
-            let isConfirm = confirm("ほんとうに ぼうけんの きろくを ぜんぶ けしますか？\n（あつめた コインや ずかんも ゼロになります）");
-            if (isConfirm) {
-                localStorage.clear();
-                alert("データを リセットしました！ あたらしい ぼうけんの はじまりです！");
-                location.reload(); 
+    // ページ数（最低1ページは用意）
+    const totalPages = Math.max(1, Math.ceil(gotItems.length / ITEMS_PER_PAGE));
+    if (zukanPage >= totalPages) zukanPage = totalPages - 1;
+
+    for (let p = 0; p < totalPages; p++) {
+        const page = document.createElement('div');
+        page.className = 'zukan-page';
+
+        for (let i = 0; i < ITEMS_PER_PAGE; i++) {
+            const item = gotItems[p * ITEMS_PER_PAGE + i];
+            const card = document.createElement('div');
+
+            if (item) {
+                // 入手済みカード
+                card.className = `zukan-card-item got ${item.rarity}`;
+                const rarityText = item.rarity === 'superrare' ? 'SR'
+                                 : item.rarity === 'rare'      ? 'R' : '';
+                card.innerHTML = `
+                    <div class="zukan-card-emoji">${item.emoji}</div>
+                    <div class="zukan-card-name">${item.name}</div>
+                    ${rarityText ? `<div class="zukan-card-rarity ${item.rarity}">${rarityText}</div>` : ''}
+                `;
+            } else {
+                // 空きスペース → ？マーク
+                card.className = 'zukan-card-item unknown';
+                card.innerHTML = `<div class="zukan-card-emoji">？</div>`;
             }
+            page.appendChild(card);
         }
+        track.appendChild(page);
 
-        updateStatus(); updateCollectionGrid();
-    </script>
+        // ドット
+        const dot = document.createElement('button');
+        dot.className = 'zukan-dot' + (p === zukanPage ? ' active' : '');
+        dot.setAttribute('aria-label', `${p + 1}ページ`);
+        dot.onclick = () => goToZukanPage(p);
+        dotsEl.appendChild(dot);
+    }
+
+    applyZukanSlide(totalPages);
+}
+
+function applyZukanSlide(totalPages) {
+    const tp = totalPages ?? Math.max(1, Math.ceil(collectedIds.length / ITEMS_PER_PAGE));
+    document.getElementById('zukan-track').style.transform = `translateX(-${zukanPage * 100}%)`;
+
+    document.querySelectorAll('.zukan-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === zukanPage);
+    });
+
+    document.getElementById('zukan-page-label').innerText = `${zukanPage + 1} / ${tp}`;
+    document.querySelector('.zukan-arrow-left').disabled  = zukanPage === 0;
+    document.querySelector('.zukan-arrow-right').disabled = zukanPage >= tp - 1;
+}
+
+function slideZukan(dir) {
+    const tp = Math.max(1, Math.ceil(collectedIds.length / ITEMS_PER_PAGE));
+    const next = zukanPage + dir;
+    if (next < 0 || next >= tp) return;
+    zukanPage = next;
+    applyZukanSlide(tp);
+}
+
+function goToZukanPage(p) {
+    zukanPage = p;
+    applyZukanSlide(Math.max(1, Math.ceil(collectedIds.length / ITEMS_PER_PAGE)));
+}
+
+// タッチスワイプ対応
+let touchStartX = 0;
+document.addEventListener('touchstart', e => {
+    const vp = document.getElementById('zukan-viewport');
+    if (vp && vp.contains(e.target)) touchStartX = e.touches[0].clientX;
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+    const vp = document.getElementById('zukan-viewport');
+    if (vp && vp.contains(e.target)) {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) slideZukan(diff > 0 ? 1 : -1);
+    }
+}, { passive: true });
+
+function updateZukan() {
+    buildZukanSlider();
+}
+
+// ========================================
+// アイテム付与（レベルアップ時）
+// ========================================
+function giveItem() {
+    if (nextItemIndex >= allItems.length) return; // 50個コンプ済み
+    const itemId = itemOrder[nextItemIndex];
+    nextItemIndex++;
+    const item = allItems.find(i => i.id === itemId);
+    if (!item) return;
+    if (!collectedIds.includes(item.id)) {
+        collectedIds.push(item.id);
+    }
+    showItemPopup(item);
+}
+
+// ========================================
+// フラッシュ演出
+// ========================================
+function flashBg(type) {
+    const el = document.getElementById('flash-overlay');
+    el.className = 'flash-overlay flash-' + type;
+    el.style.opacity = '1';
+    setTimeout(() => { el.style.opacity = '0'; }, 300);
+}
+
+// ========================================
+// アイテムポップアップ
+// ========================================
+function showItemPopup(item) {
+    const popup = document.getElementById('item-popup');
+    const overlay = document.getElementById('popup-overlay');
+
+    document.getElementById('popup-emoji').innerText = item.emoji;
+    document.getElementById('popup-name').innerText = item.name;
+
+    const rarityEl = document.getElementById('popup-rarity-text');
+    if (item.rarity === 'superrare') {
+        rarityEl.innerText = '✨ スーパーレア ✨';
+        rarityEl.className = 'popup-rarity superrare';
+        popup.className = 'item-popup superrare';
+        flashBg('gold');
+        playSound('item_superrare');
+    } else if (item.rarity === 'rare') {
+        rarityEl.innerText = '💙 レア';
+        rarityEl.className = 'popup-rarity rare';
+        popup.className = 'item-popup rare';
+        flashBg('blue');
+        playSound('item_rare');
+    } else {
+        rarityEl.innerText = '💚 ゲット！';
+        rarityEl.className = 'popup-rarity common';
+        popup.className = 'item-popup';
+        flashBg('green');
+        playSound('item_common');
+    }
+
+    overlay.classList.add('show');
+    popup.classList.remove('show');
+    void popup.offsetWidth; // reflow
+    popup.classList.add('show');
+
+    updateZukan();
+}
+
+function closePopup() {
+    document.getElementById('item-popup').classList.remove('show');
+    document.getElementById('popup-overlay').classList.remove('show');
+}
+
+// ========================================
+// レベルアップ（quest.htmlからも呼べるようlocalStorage経由）
+// ========================================
+// ※ quest.html側でsaved_exp等を更新した後、index.htmlに戻ったときに反映される
+
+// ========================================
+// メニュー操作
+// ========================================
+function toggleGrade(cardId) {
+    playSound('click');
+    document.querySelectorAll('.grade-card').forEach(c => {
+        if (c.id !== cardId) c.classList.remove('open');
+    });
+    document.getElementById(cardId).classList.toggle('open');
+}
+
+function goToQuest(url) {
+    playSound('click');
+    setTimeout(() => { window.location.href = url; }, 120);
+}
+
+// ========================================
+// リセット
+// ========================================
+function resetData() {
+    if (confirm('ほんとうに ぜんぶの きろくを けしますか？\nあつめた ずかんも ゼロになります。')) {
+        localStorage.clear();
+        alert('データを リセットしました！ あらたな ぼうけんの はじまりです！');
+        location.reload();
+    }
+}
+
+// ========================================
+// ページに戻ってきたとき（quest.htmlからの帰還）
+// ========================================
+function checkLevelUp() {
+    // quest.html側でレベルアップ処理をして、index.htmlに戻ったときにアイテムを配布
+    const pendingItems = load('saved_pending_items', 0);
+    if (pendingItems > 0) {
+        save('saved_pending_items', 0);
+        for (let i = 0; i < pendingItems; i++) {
+            setTimeout(() => giveItem(), i * 800);
+        }
+    }
+}
+
+// ========================================
+// 初期化
+// ========================================
+window.onload = function() {
+    // 最新データ再読み込み
+    level       = load('saved_level', 1);
+    exp         = load('saved_exp', 0);
+    solvedCount = load('saved_solved_count', 0);
+    collectedIds= load('saved_collection', []);
+    itemOrder   = load('saved_item_order', null);
+    if (!itemOrder) {
+        itemOrder = shuffleArray(allItems.map(i => i.id));
+        save('saved_item_order', itemOrder);
+    }
+    nextItemIndex = load('saved_next_item_index', 0);
+
+    updateStatus();
+    updateZukan();
+    checkLevelUp();
+};
+</script>
+
 </body>
 </html>
