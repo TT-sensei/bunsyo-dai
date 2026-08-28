@@ -314,7 +314,7 @@ function checkAnswer() {
 function showResult() {
   const state = loadState();
   if (!session.collectionReward) {
-    session.collectionReward = awardRandomCollection(collectionCatalog);
+    session.collectionReward = awardRandomCollection(collectionCatalog, { allowDuplicate: session.helped > 0 });
   }
   const reward = session.collectionReward;
   $('#result-formulas').textContent = String(session.formulas);
@@ -333,8 +333,8 @@ function showResult() {
   if (reward.badge) {
     rewardBox.classList.remove('is-hidden');
     badgeLarge.innerHTML = '<img src="' + collectionImageUrl(reward.badge) + '" alt="' + collectionLabel(reward.badge) + '">';
-    $('#collection-reward-title').textContent = 'バッジを見つけた！';
-    $('#collection-reward-copy').textContent = collectionSeriesLabel(reward.badge.series) + '・' + collectionRarityLabel(reward.badge.rarity) + 'の「' + reward.badge.item + '」をコレクションに追加しました。';
+    $('#collection-reward-title').textContent = reward.duplicate ? 'また見つけた！' : '新しいバッジを見つけた！';
+    $('#collection-reward-copy').textContent = collectionSeriesLabel(reward.badge.series) + '・' + collectionRarityLabel(reward.badge.rarity) + 'の「' + reward.badge.item + '」' + (reward.duplicate ? 'だね。今回は答えサポートを使ったので、同じバッジが出ることがあります。' : 'をコレクションに追加しました。');
   } else {
     rewardBox.classList.remove('is-hidden');
     badgeLarge.innerHTML = '<span>✓</span>';
