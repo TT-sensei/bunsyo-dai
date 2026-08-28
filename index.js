@@ -9,6 +9,14 @@ import {
   gradeMeta,
   operationMeta
 } from './data.js';
+import {
+  COLLECTION_COUNT,
+  collectionCatalog,
+  collectionImageUrl,
+  collectionLabel,
+  collectionRarityLabel,
+  collectionSeriesLabel
+} from './collection.js';
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -22,8 +30,28 @@ function renderProgress() {
   $('#level-label').textContent = 'Lv.' + state.level;
   $('#exp-label').textContent = '次のレベルまで ' + String(Math.max(0, 10 - state.exp));
   $('#exp-fill').style.width = Math.min(100, state.exp * 10) + '%';
+  renderCollection();
   const soundButton = $('#sound-toggle');
   soundButton.textContent = state.soundOn === false ? '🔇 音 OFF' : '🔊 音 ON';
+}
+
+function renderCollection() {
+  const owned = new Set(state.collections || []);
+  $('#collection-count').textContent = String(owned.size);
+  $('#collection-total').textContent = String(COLLECTION_COUNT);
+  $('#collection-grid').innerHTML = collectionCatalog.map((badge) => {
+    const found = owned.has(badge.id);
+    const label = collectionLabel(badge);
+    return '<article class="collection-badge-card' + (found ? ' is-found' : ' is-locked') + '">' +
+      '<div class="collection-badge-frame">' +
+        (found
+          ? '<img src="' + collectionImageUrl(badge) + '" alt="' + label + '" loading="lazy">'
+          : '<span aria-hidden="true">?</span>') +
+      '</div>' +
+      '<strong>' + (found ? badge.item : '？？？') + '</strong>' +
+      '<small>' + collectionSeriesLabel(badge.series) + '・' + collectionRarityLabel(badge.rarity) + '</small>' +
+    '</article>';
+  }).join('');
 }
 
 function renderGrades() {
@@ -66,11 +94,11 @@ function renderRoutes() {
   if (!availableModes.includes(selectedMode)) selectedMode = 'mixed';
 
   const cards = [
-    routeCard('mixed', 'おすすめの旅', 'いろいろな場面を10問', '✦', 'violet', selectedMode === 'mixed')
+    routeCard('mixed', 'おすすめの旅', 'いろいろな場面を7問', '✦', 'violet', selectedMode === 'mixed')
   ];
   meta.operations.forEach((operation) => {
     const item = operationMeta[operation];
-    cards.push(routeCard(operation, item.label + 'の道', '式の形を見つける10問', item.icon, item.color, selectedMode === operation));
+    cards.push(routeCard(operation, item.label + 'の道', '式の形を見つける7問', item.icon, item.color, selectedMode === operation));
   });
   if (gradeMistakes.length) {
     cards.push(routeCard('mistakes', 'まちがいノート', gradeMistakes.length + '種類をもう一度', '↺', 'amber', selectedMode === 'mistakes'));
@@ -89,7 +117,7 @@ function renderRoutes() {
     '</div>' +
     '<div class="route-grid">' + cards.join('') + '</div>' +
     '<div class="route-actions">' +
-      '<span class="route-selected-note">' + meta.label + '｜' + selectedLabel + '｜1回10問</span>' +
+      '<span class="route-selected-note">' + meta.label + '｜' + selectedLabel + '｜1回7問</span>' +
       '<button class="primary-button" id="start-quest" type="button">この旅をはじめる →</button>' +
     '</div>';
 }

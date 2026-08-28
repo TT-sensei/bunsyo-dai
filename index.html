@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="文章題を読んで式をたてる、小学生向け算数Web教材">
   <title>ことばの森｜文章題の立式</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260828-5">
 </head>
 <body>
   <header class="portal-header">
@@ -53,6 +53,17 @@
       <div class="progress-side"><strong id="level-label">Lv.1</strong><span id="exp-label">次のレベルまで 10</span></div>
     </section>
 
+    <section class="collection-section" aria-labelledby="collection-heading">
+      <div class="section-heading collection-heading">
+        <div>
+          <h2 id="collection-heading">コレクション</h2>
+          <p>7問の旅をゴールすると、バッジを1つ見つけます。</p>
+        </div>
+      <strong class="collection-count"><span id="collection-count">0</span> / <span id="collection-total">150</span></strong>
+      </div>
+      <div class="collection-grid" id="collection-grid" aria-live="polite"></div>
+    </section>
+
     <section aria-labelledby="grade-heading">
       <div class="section-heading">
         <div>
@@ -73,11 +84,11 @@
     </section>
 
     <footer class="portal-footer">
-      <span>1回の旅は10問。短い時間でも、何度も立式できます。</span>
+      <span>1回の旅は7問。短い時間でも、何度も立式できます。</span>
       <button class="danger-link" id="reset-progress" type="button">学習記録をリセット</button>
     </footer>
   </main>
 
-  <script type="module" src="index.js"></script>
+  <script type="module" src="index.js?v=20260828-5"></script>
 </body>
 </html>

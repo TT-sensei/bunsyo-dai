@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="文章題の式をたてる練習">
   <title>立式の旅｜ことばの森</title>
-  <link rel="stylesheet" href="styles.css?v=20260828-4">
+  <link rel="stylesheet" href="styles.css?v=20260828-5">
 </head>
 <body class="quest-page">
   <header class="quest-header">
@@ -16,7 +16,7 @@
         <h1 id="quest-title">式の道をひらこう</h1>
       </div>
       <div class="quest-progress" aria-label="問題の進み具合">
-        <span class="quest-progress-label" id="q-progress">1 / 10</span>
+        <span class="quest-progress-label" id="q-progress">1 / 7</span>
         <span class="quest-progress-track" aria-hidden="true"><span class="quest-progress-fill" id="q-progress-fill"></span></span>
       </div>
       <button class="sound-button" id="sound-toggle" type="button" aria-label="音の設定">🔊 音 ON</button>
@@ -125,6 +125,16 @@
       </div>
       <h2 id="result-title">旅を終えました</h2>
       <p id="result-subtitle">今日の立式をふり返ろう。</p>
+      <section class="collection-reward is-hidden" id="collection-reward" aria-live="polite">
+        <p class="collection-reward-label">ゴールのごほうび</p>
+        <div class="collection-reward-content">
+          <div class="collection-badge-large" id="collection-badge-large"><span>？</span></div>
+          <div>
+            <strong id="collection-reward-title">バッジを見つけた！</strong>
+            <p id="collection-reward-copy"></p>
+          </div>
+        </div>
+      </section>
       <div class="result-stats">
         <div class="result-stat"><strong id="result-formulas">0</strong><span>式をたてた</span></div>
         <div class="result-stat"><strong id="result-correct">0</strong><span>最後までできた</span></div>
@@ -138,6 +148,6 @@
     </section>
   </div>
 
-  <script type="module" src="quest.js?v=20260828-4"></script>
+  <script type="module" src="quest.js?v=20260828-5"></script>
 </body>
 </html>

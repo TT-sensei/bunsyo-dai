@@ -127,6 +127,7 @@ const defaultState = () => ({
   attempts: 0,
   fragments: 0,
   answerHelped: 0,
+  collections: [],
   level: 1,
   exp: 0,
   soundOn: true,
@@ -183,6 +184,7 @@ function normalizeState(saved) {
   };
   result.mistakes = normalizeMistakes(result.mistakes);
   result.answerHelped = Number(result.answerHelped) || 0;
+  result.collections = Array.isArray(result.collections) ? [...new Set(result.collections)] : [];
   result.seals = Array.isArray(result.seals) ? result.seals : [];
   result.templateStats = result.templateStats && typeof result.templateStats === 'object'
     ? result.templateStats
@@ -295,6 +297,24 @@ export function recordViewed() {
   const state = loadState();
   state.viewed += 1;
   return saveState(state);
+}
+
+export function awardRandomCollection(catalog) {
+  const state = loadState();
+  const owned = new Set(state.collections);
+  const remaining = catalog.filter((badge) => !owned.has(badge.id));
+  if (!remaining.length) {
+    return { state, badge: null, complete: true };
+  }
+  const badge = remaining[Math.floor(Math.random() * remaining.length)];
+  state.collections.push(badge.id);
+  const saved = saveState(state);
+  emitEdu(EDU_EVENTS.COMPLETE, { type: 'collection', badge });
+  return {
+    state: saved,
+    badge,
+    complete: saved.collections.length >= catalog.length
+  };
 }
 
 export function resetProgress() {
