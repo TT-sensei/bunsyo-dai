@@ -165,11 +165,11 @@ function setFeedback(target, type, message) {
 }
 
 function formulaMatches(question, left, operation, right) {
-  const expression = String(left) + operationSymbol(operation) + String(right);
-  const expected = String(question.num1) + operationSymbol(question.operation) + String(question.num2);
+  const expression = String(left) + operatorSymbol(operation) + String(right);
+  const expected = String(question.num1) + operatorSymbol(question.operation) + String(question.num2);
   const candidates = [expected];
   if (question.operation === 'add' || question.operation === 'mul') {
-    candidates.push(String(question.num2) + operationSymbol(question.operation) + String(question.num1));
+    candidates.push(String(question.num2) + operatorSymbol(question.operation) + String(question.num1));
   }
   return checker.matches(expression, candidates);
 }
