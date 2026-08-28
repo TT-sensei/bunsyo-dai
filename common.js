@@ -299,20 +299,24 @@ export function recordViewed() {
   return saveState(state);
 }
 
-export function awardRandomCollection(catalog) {
+export function awardRandomCollection(catalog, options = {}) {
   const state = loadState();
   const owned = new Set(state.collections);
-  const remaining = catalog.filter((badge) => !owned.has(badge.id));
+  const allowDuplicate = options.allowDuplicate === true;
+  const remaining = allowDuplicate ? catalog : catalog.filter((badge) => !owned.has(badge.id));
   if (!remaining.length) {
     return { state, badge: null, complete: true };
   }
   const badge = remaining[Math.floor(Math.random() * remaining.length)];
-  state.collections.push(badge.id);
+  const added = !owned.has(badge.id);
+  if (added) state.collections.push(badge.id);
   const saved = saveState(state);
   emitEdu(EDU_EVENTS.COMPLETE, { type: 'collection', badge });
   return {
     state: saved,
     badge,
+    added,
+    duplicate: !added,
     complete: saved.collections.length >= catalog.length
   };
 }
