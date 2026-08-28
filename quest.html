@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="文章題の式をたてる練習">
   <title>立式の旅｜ことばの森</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260828-3">
 </head>
 <body class="quest-page">
   <header class="quest-header">
@@ -41,17 +41,23 @@
             <p class="scene-tip">何の数が、どんなふうに変わったのかを見つけよう。</p>
           </div>
         </div>
+
+        <div class="navi-help-card" id="navi-help-card">
+          <img id="navi-img" src="https://tt-sensei.github.io/navi-character-/assets/web/fantasy/sora-swordsman.webp" alt="文章題の学習を案内するファンタジーNAVI">
+          <div class="navi-help-copy">
+            <small id="navi-label">NAVI</small>
+            <p id="navi-message">文章の中の数の関係を見つけよう。</p>
+            <button class="hint-trigger" id="hint-button" type="button" aria-label="ことばのヒントを開く">
+              <span class="hint-trigger-icon" aria-hidden="true">💡</span>
+              <strong>たすけて！</strong>
+              <span>ことばに注目</span>
+            </button>
+            <div class="hint-box is-hidden" id="hint-box"></div>
+          </div>
+        </div>
       </section>
 
       <section class="work-column" aria-label="式と答えの入力">
-        <div class="navi-card">
-          <img id="navi-img" src="https://tt-sensei.github.io/navi-character-/assets/web/fantasy/sora-swordsman.webp" alt="文章題への挑戦を案内するファンタジーNAVI">
-          <div class="navi-copy">
-            <small id="navi-label">NAVI</small>
-            <p id="navi-message">文章の中の数の関係を見つけよう。</p>
-          </div>
-        </div>
-
         <div class="step-card is-active" id="formula-step">
           <div class="step-head">
             <span class="step-number">1</span>
@@ -73,7 +79,6 @@
           <p class="formula-equals" id="formula-preview">式：□　□　□</p>
           <button class="step-action" id="check-formula" type="button">この式でいい？</button>
           <div class="feedback" id="formula-feedback" aria-live="polite"></div>
-          <div class="hint-box is-hidden" id="hint-box"></div>
         </div>
 
         <div class="step-card is-locked" id="answer-step" aria-disabled="true">
@@ -95,9 +100,8 @@
         </div>
 
         <div class="escape-row">
-          <button class="quiet-button" id="hint-button" type="button">💡 ことばに注目</button>
           <button class="quiet-button is-hidden" id="view-answer" type="button">答えを見る</button>
-          <span class="session-note">困ったときは、手がかりを開いて大丈夫。</span>
+          <span class="session-note">困ったときは、問題の下の「たすけて！」を押して大丈夫。</span>
         </div>
       </section>
     </div>
@@ -134,6 +138,6 @@
     </section>
   </div>
 
-  <script type="module" src="quest.js?v=20260828-2"></script>
+  <script type="module" src="quest.js?v=20260828-3"></script>
 </body>
 </html>

@@ -855,31 +855,32 @@ img {
   font-weight: 700;
 }
 
-.navi-card {
-  display: flex;
+.navi-help-card {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
-  min-height: 71px;
-  margin-bottom: 12px;
-  padding: 8px 12px 8px 8px;
+  gap: 13px;
+  min-height: 124px;
+  margin-top: 12px;
+  padding: 7px 15px 7px 7px;
   border: 1px solid #dce6ef;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0.96), rgba(245, 241, 255, 0.96));
   box-shadow: var(--shadow-small);
 }
 
-.navi-card img {
-  width: 64px;
-  height: 64px;
-  flex: 0 0 auto;
+.navi-help-card img {
+  width: 116px;
+  height: 116px;
+  align-self: center;
   object-fit: contain;
 }
 
-.navi-copy {
+.navi-help-copy {
   min-width: 0;
 }
 
-.navi-copy small {
+.navi-help-copy small {
   display: block;
   color: var(--violet);
   font-size: 0.68rem;
@@ -887,10 +888,65 @@ img {
   letter-spacing: 0.08em;
 }
 
-.navi-copy p {
+.navi-help-copy p {
   margin: 2px 0 0;
   color: #41556a;
   font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.hint-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  margin-top: 8px;
+  padding: 7px 13px 7px 9px;
+  border: 2px solid #d9b34e;
+  border-radius: 999px;
+  color: #654d15;
+  background: #fff5cd;
+  box-shadow: 0 4px 0 #ecd990;
+  font-size: 0.82rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.hint-trigger:hover {
+  background: #ffefb4;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #ecd990;
+}
+
+.hint-trigger:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #ecd990;
+}
+
+.hint-trigger:focus-visible {
+  outline: 3px solid rgba(73, 111, 190, 0.4);
+  outline-offset: 3px;
+}
+
+.hint-trigger-icon {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 0.92rem;
+}
+
+.hint-trigger strong {
+  color: #8b5f0f;
+  font-size: 0.98rem;
+}
+
+.hint-trigger > span:last-child {
+  color: #7b6a3d;
+  font-size: 0.7rem;
   font-weight: 800;
 }
 
@@ -1469,9 +1525,15 @@ img {
     width: 58px;
   }
 
-  .navi-card img {
-    width: 55px;
-    height: 55px;
+  .navi-help-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 10px;
+    padding-right: 10px;
+  }
+
+  .navi-help-card img {
+    width: 96px;
+    height: 96px;
   }
 
   .step-card {
