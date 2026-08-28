@@ -126,6 +126,7 @@ const defaultState = () => ({
   viewed: 0,
   attempts: 0,
   fragments: 0,
+  answerHelped: 0,
   level: 1,
   exp: 0,
   soundOn: true,
@@ -181,6 +182,7 @@ function normalizeState(saved) {
     ...(saved && saved.operationSolved ? saved.operationSolved : {})
   };
   result.mistakes = normalizeMistakes(result.mistakes);
+  result.answerHelped = Number(result.answerHelped) || 0;
   result.seals = Array.isArray(result.seals) ? result.seals : [];
   result.templateStats = result.templateStats && typeof result.templateStats === 'object'
     ? result.templateStats
@@ -252,9 +254,10 @@ export function recordCorrect(question, options = {}) {
   state.solved += 1;
   state.formulaSolved += 1;
   state.fragments += 1;
+  if (options.answerHelped) state.answerHelped += 1;
   state.attempts += 1;
   state.operationSolved[question.operation] = (state.operationSolved[question.operation] || 0) + 1;
-  state.exp += options.hintUsed ? 1 : 2;
+  state.exp += (options.answerHelped || options.hintUsed) ? 1 : 2;
   const templateStat = state.templateStats[question.templateId] || { correct: 0, total: 0 };
   templateStat.correct += 1;
   templateStat.total += 1;

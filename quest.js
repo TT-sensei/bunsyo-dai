@@ -7,8 +7,6 @@ import {
   emitEdu,
   playSound,
   recordCorrect,
-  recordViewed,
-  removeMistake,
   toggleSound,
   QuestionPool
 } from './common.js';
@@ -54,7 +52,8 @@ let answerAttempts = 0;
 let session = {
   formulas: 0,
   correct: 0,
-  viewed: 0
+  viewed: 0,
+  helped: 0
 };
 
 function operatorSymbol(operation) {
@@ -113,7 +112,7 @@ function resetAnswerState() {
   $('#check-formula').classList.remove('is-hidden');
   $('#next-question').classList.add('is-hidden');
   $('#hint-button').classList.remove('is-hidden');
-  $('#view-answer').classList.add('is-hidden');
+  $('#answer-help-button').classList.add('is-hidden');
   $('#hint-box').classList.add('is-hidden');
   $('#answer-reveal').classList.add('is-hidden');
   $('#formula-feedback').className = 'feedback';
@@ -207,6 +206,7 @@ function checkFormula() {
     $('#answer-step').setAttribute('aria-disabled', 'false');
     $('#answer-input').disabled = false;
     $('#check-answer').disabled = false;
+    $('#answer-help-button').classList.remove('is-hidden');
     $('#answer-formula-view').textContent = '式：' + currentQuestion.num1 + ' ' + operatorSymbol(currentQuestion.operation) + ' ' + currentQuestion.num2;
     setFeedback($('#formula-feedback'), 'correct', '式がたてられたね。次はこの式を計算しよう。');
     setNavi('support', '式の道が開いたよ。答えを出してみよう。');
@@ -218,7 +218,6 @@ function checkFormula() {
       ? '数字の関係をもう一度。ことばに注目してみよう。'
       : 'おしい。文章の中の「はじめ」と「変わった数」を見直そう。');
     setNavi('retry', '大丈夫。数がどう変わったかを見直そう。');
-    $('#view-answer').classList.remove('is-hidden');
     playSound('wrong');
   }
 }
@@ -239,26 +238,25 @@ function showHint() {
   playSound('hint');
 }
 
-function showAnswer() {
-  if (answerRevealed) return;
+function showAnswerHelp() {
+  if (!formulaPassed || answerRevealed) return;
   answerRevealed = true;
   session.viewed += 1;
-  recordViewed();
-  addMistake(currentQuestion);
+  session.helped += 1;
+  recordCorrect(currentQuestion, { hintUsed, answerHelped: true });
   const reveal = $('#answer-reveal');
   reveal.innerHTML =
-    '<strong>答えを見る</strong><br>' +
-    '式は <strong>' + currentQuestion.num1 + ' ' + operatorSymbol(currentQuestion.operation) + ' ' + currentQuestion.num2 + '</strong>、' +
-    '答えは <strong>' + currentQuestion.answer + '</strong> です。';
+    '<strong>答えをお願い</strong><br>' +
+    '答えは <strong>' + currentQuestion.answer + '</strong> です。式は自分でたてられたね。';
   reveal.classList.remove('is-hidden');
   $('#check-formula').classList.add('is-hidden');
   $('#check-answer').classList.add('is-hidden');
-  $('#view-answer').classList.add('is-hidden');
+  $('#answer-help-button').classList.add('is-hidden');
   $('#hint-button').classList.add('is-hidden');
   $('#next-question').classList.remove('is-hidden');
-  $('#next-question').textContent = questionNumber === 10 ? '結果を見る →' : '次の問題へ（記録なし）';
-  setFeedback($('#answer-feedback'), 'info', '答えを見て確かめたね。今回は正答の記録には入りません。');
-  setNavi('retry', 'わかったところを、次の問題で使ってみよう。');
+  $('#next-question').textContent = questionNumber === 10 ? '結果を見る →' : '次の問題へ（答えサポート）';
+  setFeedback($('#answer-feedback'), 'info', '立式は記録したよ。答えをお願いしたので、経験値は少なめです。');
+  setNavi('support', '式は自分でたてられたね。答えはNAVIに任せて大丈夫。');
   playSound('answer');
 }
 
@@ -281,7 +279,7 @@ function checkAnswer() {
     const reward = recordCorrect(currentQuestion, { hintUsed });
     $('#check-answer').classList.add('is-hidden');
     $('#hint-button').classList.add('is-hidden');
-    $('#view-answer').classList.add('is-hidden');
+    $('#answer-help-button').classList.add('is-hidden');
     $('#next-question').classList.remove('is-hidden');
     $('#next-question').textContent = questionNumber === 10 ? '結果を見る →' : '次の問題へ →';
     let message = '正解！式も答えもぴったり。立式のかけらを1つ手に入れたよ。';
@@ -294,7 +292,6 @@ function checkAnswer() {
     setFeedback($('#answer-feedback'), 'wrong', answerAttempts > 1
       ? '式は合っているよ。計算をもう一度確かめよう。'
       : '式は合っているよ。数字を計算してみよう。');
-    $('#view-answer').classList.remove('is-hidden');
     setNavi('thinking', 'たてた式を、ゆっくり計算してみよう。');
     playSound('wrong');
   }
@@ -354,7 +351,7 @@ $('#formula-num2').addEventListener('input', updateFormulaPreview);
 $('#check-formula').addEventListener('click', checkFormula);
 $('#check-answer').addEventListener('click', checkAnswer);
 $('#hint-button').addEventListener('click', showHint);
-$('#view-answer').addEventListener('click', showAnswer);
+$('#answer-help-button').addEventListener('click', showAnswerHelp);
 $('#next-question').addEventListener('click', nextQuestion);
 $('#retry-quest').addEventListener('click', retryQuest);
 $('#sound-toggle').addEventListener('click', () => {
