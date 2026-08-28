@@ -1,790 +1,139 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>クエスト - 算数クエスト</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap');
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background: linear-gradient(160deg, #cce8ff 0%, #e0f5e9 50%, #fff9e0 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    color: #1a2a3a;
-    padding-bottom: 60px;
-}
-
-.quest-header {
-    background: linear-gradient(135deg, #1565c0 0%, #0288d1 60%, #26c6da 100%);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 3px 12px rgba(21,101,192,0.3);
-}
-.header-title {
-    font-family: 'Kaisei Decol', serif;
-    color: #fff;
-    font-size: 1.2rem;
-}
-.header-mode {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.85);
-    background: rgba(255,255,255,0.15);
-    padding: 4px 12px;
-    border-radius: 20px;
-}
-
-#main {
-    max-width: 620px;
-    margin: 0 auto;
-    padding: 20px 14px;
-}
-
-/* 問題カード */
-.question-card {
-    background: #fff;
-    border-radius: 18px;
-    padding: 24px 22px;
-    box-shadow: 0 4px 16px rgba(21,101,192,0.1);
-    border: 2px solid rgba(21,101,192,0.1);
-    margin-bottom: 16px;
-    animation: slideIn 0.3s ease;
-}
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-.question-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #1976d2;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-}
-.question-text {
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.7;
-    color: #1a2a3a;
-    min-height: 60px;
-}
-
-/* 式入力カード */
-.formula-card {
-    background: #fff;
-    border-radius: 18px;
-    padding: 20px 22px;
-    box-shadow: 0 4px 16px rgba(21,101,192,0.1);
-    border: 2px solid rgba(21,101,192,0.1);
-    margin-bottom: 16px;
-}
-.formula-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #1976d2;
-    letter-spacing: 0.08em;
-    margin-bottom: 14px;
-}
-.formula-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-.f-input {
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    width: 64px;
-    padding: 10px 6px;
-    text-align: center;
-    border: 2px solid #90caf9;
-    border-radius: 10px;
-    background: #f0f7ff;
-    color: #1a2a3a;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    -moz-appearance: textfield;
-}
-.f-input::-webkit-outer-spin-button,
-.f-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-.f-input:focus {
-    outline: none;
-    border-color: #1976d2;
-    box-shadow: 0 0 0 3px rgba(25,118,210,0.15);
-    background: #fff;
-}
-.f-input.ans-input {
-    width: 80px;
-    border-color: #66bb6a;
-    background: #f1f8e9;
-}
-.f-input.ans-input:focus {
-    border-color: #388e3c;
-    box-shadow: 0 0 0 3px rgba(56,142,60,0.15);
-}
-.f-select {
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    padding: 10px 8px;
-    border: 2px solid #90caf9;
-    border-radius: 10px;
-    background: #f0f7ff;
-    color: #1565c0;
-    cursor: pointer;
-}
-.f-select:focus { outline: none; border-color: #1976d2; }
-.f-eq { font-size: 1.5rem; font-weight: 700; color: #546e7a; }
-
-/* ===== 計算機 ===== */
-.calc-toggle-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: #fff8e1;
-    border: 2px solid #ffe082;
-    color: #e65100;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 700;
-    padding: 8px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.15s;
-    margin: 14px auto 0;
-    width: fit-content;
-}
-.calc-toggle-btn:hover { background: #fff3cd; }
-
-.calc-wrap {
-    display: none;
-    background: #fafafa;
-    border: 2px solid #ffe082;
-    border-radius: 14px;
-    padding: 14px;
-    margin-top: 10px;
-    animation: slideIn 0.2s ease;
-}
-.calc-wrap.open { display: block; }
-
-.calc-display {
-    background: #1a2a3a;
-    color: #7fffbf;
-    font-family: 'Courier New', monospace;
-    font-size: 1.6rem;
-    font-weight: 700;
-    text-align: right;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    min-height: 58px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.calc-sub {
-    font-size: 0.72rem;
-    color: #90a4ae;
-    display: block;
-    min-height: 14px;
-    margin-bottom: 2px;
-}
-
-.calc-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 7px;
-}
-.calc-btn {
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 13px 6px;
-    border: none;
-    border-radius: 9px;
-    cursor: pointer;
-    transition: transform 0.08s;
-    box-shadow: 0 3px 0 rgba(0,0,0,0.12);
-}
-.calc-btn:active { transform: translateY(3px); box-shadow: none; }
-.calc-btn.num   { background: #e3f2fd; color: #1565c0; }
-.calc-btn.op    { background: #fff3e0; color: #e65100; }
-.calc-btn.eq    { background: linear-gradient(135deg,#2e9e5b,#43a047); color:#fff; }
-.calc-btn.clear { background: #ffebee; color: #c62828; }
-.calc-btn.del   { background: #ede7f6; color: #6a1b9a; }
-
-.calc-use-btn {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-    background: #e8f5e9;
-    border: 2px solid #66bb6a;
-    color: #2e7d32;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    padding: 9px;
-    border-radius: 9px;
-    cursor: pointer;
-    transition: background 0.15s;
-}
-.calc-use-btn:hover { background: #c8e6c9; }
-
-.calc-notice {
-    font-size: 0.72rem;
-    color: #e65100;
-    text-align: center;
-    margin-top: 6px;
-}
-
-/* ボタンエリア */
-.btn-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-.btn-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    justify-content: center;
-}
-button {
-    font-family: 'Noto Sans JP', sans-serif;
-    font-weight: 700;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: transform 0.1s;
-}
-button:active { transform: scale(0.95); }
-
-.btn-check {
-    background: linear-gradient(135deg, #2e9e5b, #43a047);
-    color: #fff;
-    font-size: 1.1rem;
-    padding: 14px 0;
-    width: 100%;
-    box-shadow: 0 4px 0 #1b5e20;
-}
-.btn-check:active { box-shadow: 0 1px 0 #1b5e20; transform: translateY(3px); }
-
-.btn-hint {
-    background: #fff8e1;
-    color: #e65100;
-    font-size: 0.95rem;
-    padding: 10px 20px;
-    border: 2px solid #ffcc02;
-}
-
-.btn-next {
-    background: linear-gradient(135deg, #1565c0, #0288d1);
-    color: #fff;
-    font-size: 1.1rem;
-    padding: 14px 0;
-    width: 100%;
-    box-shadow: 0 4px 0 #0d47a1;
-    display: none;
-    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
-}
-.btn-next:active { box-shadow: 0 1px 0 #0d47a1; transform: translateY(3px); }
-
-@keyframes popIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
-}
-
-.btn-back {
-    background: #eceff1;
-    color: #546e7a;
-    font-size: 0.9rem;
-    padding: 10px 24px;
-    border: 2px solid #cfd8dc;
-}
-
-/* 結果 */
-.result-card {
-    border-radius: 14px;
-    padding: 16px 20px;
-    margin-bottom: 14px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-align: center;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 6px;
-    animation: fadeIn 0.25s ease;
-}
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-.result-card.correct { background:#e8f5e9; border:2px solid #66bb6a; color:#2e7d32; }
-.result-card.partial { background:#fff8e1; border:2px solid #ffb300; color:#e65100; }
-.result-card.wrong   { background:#ffebee; border:2px solid #ef9a9a; color:#c62828; }
-.result-card.empty   { display:none; }
-.result-answer-hint  { font-size:0.9rem; font-weight:400; opacity:0.85; }
-
-.reward-badge {
-    display: none;
-    background: linear-gradient(135deg, #fff8e1, #fff3e0);
-    border: 2px solid #ffb300;
-    border-radius: 10px;
-    padding: 8px 18px;
-    font-size: 0.9rem;
-    color: #e65100;
-    font-weight: 700;
-    text-align: center;
-    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
-    margin-bottom: 10px;
-}
-
-.cave-empty {
-    background: #fff;
-    border-radius: 18px;
-    padding: 40px 24px;
-    text-align: center;
-    box-shadow: 0 4px 16px rgba(21,101,192,0.1);
-    border: 2px solid rgba(21,101,192,0.1);
-}
-.cave-empty-icon { font-size: 3rem; margin-bottom: 12px; }
-.cave-empty-text { font-size: 1.1rem; font-weight: 700; color: #2e7d32; margin-bottom: 6px; }
-.cave-empty-sub  { font-size: 0.9rem; color: #78909c; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="文章題の式をたてる練習">
+  <title>立式の旅｜ことばの森</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-
-<header class="quest-header">
-    <div class="header-title">⚔️ クエスト</div>
-    <div class="header-mode" id="header-mode">よみこみ中...</div>
-</header>
-
-<div id="main">
-
-    <div class="question-card" id="question-card">
-        <div class="question-label">📜 もんだい</div>
-        <div class="question-text" id="q-text">よみこみ中...</div>
+<body class="quest-page">
+  <header class="quest-header">
+    <div class="quest-header-inner">
+      <a class="quest-home" href="index.html" aria-label="旅の入り口へ戻る">⌂</a>
+      <div class="quest-heading">
+        <p class="eyebrow">立式の旅</p>
+        <h1 id="quest-title">式の道をひらこう</h1>
+      </div>
+      <div class="quest-progress" aria-label="問題の進み具合">
+        <span class="quest-progress-label" id="q-progress">1 / 10</span>
+        <span class="quest-progress-track" aria-hidden="true"><span class="quest-progress-fill" id="q-progress-fill"></span></span>
+      </div>
+      <button class="sound-button" id="sound-toggle" type="button" aria-label="音の設定">🔊 音 ON</button>
     </div>
+  </header>
 
-    <div class="formula-card" id="formula-card">
-        <div class="formula-label">✏️ しきと こたえを いれよう</div>
-        <div class="formula-row">
-            <span style="font-size:1rem;color:#78909c;font-weight:700;">しき：</span>
-            <input type="number" inputmode="numeric" id="f-num1" class="f-input" min="0">
-            <select id="f-op" class="f-select">
-                <option value="?">？</option>
-                <option value="+">＋</option>
-                <option value="-">－</option>
-                <option value="×">×</option>
-                <option value="÷">÷</option>
-            </select>
-            <input type="number" inputmode="numeric" id="f-num2" class="f-input" min="0">
-            <span class="f-eq">＝</span>
-            <input type="number" inputmode="numeric" id="f-ans" class="f-input ans-input" min="0" placeholder="?">
-        </div>
-
-        <!-- 計算機トグル -->
-        <button class="calc-toggle-btn" id="calc-toggle-btn" onclick="toggleCalc()">
-            🔢 けいさんきを つかう
-        </button>
-        <div class="calc-notice" style="margin-top:6px;">※ けいさんきを つかうと EXP が はんぶんになります</div>
-
-        <!-- 計算機本体 -->
-        <div class="calc-wrap" id="calc-wrap">
-            <div class="calc-display">
-                <span class="calc-sub" id="calc-expr"></span>
-                <span id="calc-disp">0</span>
+  <main class="quest-main">
+    <div class="quest-layout">
+      <section class="problem-column" aria-labelledby="problem-heading">
+        <div class="scene-card">
+          <div class="scene-backdrop" id="scene-backdrop" aria-hidden="true"></div>
+          <div class="scene-content">
+            <div class="scene-top">
+              <span class="stage-pill" id="stage-pill">第1問</span>
+              <span class="type-pill" id="type-pill">文章題</span>
             </div>
-            <div class="calc-grid">
-                <button class="calc-btn clear" onclick="calcClear()">C</button>
-                <button class="calc-btn del"   onclick="calcDel()">⌫</button>
-                <button class="calc-btn op"    onclick="calcOp('%')">％</button>
-                <button class="calc-btn op"    onclick="calcOp('÷')">÷</button>
-
-                <button class="calc-btn num" onclick="calcNum('7')">7</button>
-                <button class="calc-btn num" onclick="calcNum('8')">8</button>
-                <button class="calc-btn num" onclick="calcNum('9')">9</button>
-                <button class="calc-btn op"  onclick="calcOp('×')">×</button>
-
-                <button class="calc-btn num" onclick="calcNum('4')">4</button>
-                <button class="calc-btn num" onclick="calcNum('5')">5</button>
-                <button class="calc-btn num" onclick="calcNum('6')">6</button>
-                <button class="calc-btn op"  onclick="calcOp('-')">－</button>
-
-                <button class="calc-btn num" onclick="calcNum('1')">1</button>
-                <button class="calc-btn num" onclick="calcNum('2')">2</button>
-                <button class="calc-btn num" onclick="calcNum('3')">3</button>
-                <button class="calc-btn op"  onclick="calcOp('+')">＋</button>
-
-                <button class="calc-btn num" style="grid-column:span 2;" onclick="calcNum('0')">0</button>
-                <button class="calc-btn num" onclick="calcNum('00')">00</button>
-                <button class="calc-btn eq"  onclick="calcEq()">=</button>
+            <p class="read-label">まずは文章をゆっくり読もう</p>
+            <div class="problem-copy">
+              <h2 id="problem-heading">もんだい</h2>
+              <p class="question-text" id="q-text">よみこみ中...</p>
             </div>
-            <button class="calc-use-btn" onclick="useCalcResult()">
-                ↑ この けっかを こたえに いれる
-            </button>
+            <p class="scene-tip">何の数が、どんなふうに変わったのかを見つけよう。</p>
+          </div>
         </div>
+      </section>
+
+      <section class="work-column" aria-label="式と答えの入力">
+        <div class="navi-card">
+          <img id="navi-img" src="https://tt-sensei.github.io/navi-character-/assets/web/fantasy/sora-swordsman.webp" alt="文章題への挑戦を案内するファンタジーNAVI">
+          <div class="navi-copy">
+            <small id="navi-label">NAVI</small>
+            <p id="navi-message">文章の中の数の関係を見つけよう。</p>
+          </div>
+        </div>
+
+        <div class="step-card is-active" id="formula-step">
+          <div class="step-head">
+            <span class="step-number">1</span>
+            <div>
+              <h2>式をたてる</h2>
+              <p>数字と演算記号を選ぼう</p>
+            </div>
+          </div>
+          <div class="formula-builder">
+            <input class="number-input" id="formula-num1" type="number" inputmode="numeric" min="0" placeholder="？" aria-label="式の左の数">
+            <div class="operator-grid" role="group" aria-label="演算記号">
+              <button class="operator-button" data-operation="add" type="button" aria-label="たし算">＋</button>
+              <button class="operator-button" data-operation="sub" type="button" aria-label="ひき算">−</button>
+              <button class="operator-button" data-operation="mul" type="button" aria-label="かけ算">×</button>
+              <button class="operator-button" data-operation="div" type="button" aria-label="わり算">÷</button>
+            </div>
+            <input class="number-input" id="formula-num2" type="number" inputmode="numeric" min="0" placeholder="？" aria-label="式の右の数">
+          </div>
+          <p class="formula-equals" id="formula-preview">式：□　□　□</p>
+          <button class="step-action" id="check-formula" type="button">この式でいい？</button>
+          <div class="feedback" id="formula-feedback" aria-live="polite"></div>
+          <div class="hint-box is-hidden" id="hint-box"></div>
+        </div>
+
+        <div class="step-card is-locked" id="answer-step" aria-disabled="true">
+          <div class="step-head">
+            <span class="step-number">2</span>
+            <div>
+              <h2>答えを出す</h2>
+              <p>できた式を計算しよう</p>
+            </div>
+          </div>
+          <div class="formula-answer-view" id="answer-formula-view">式：□　□　□</div>
+          <div class="answer-row">
+            <input class="answer-input" id="answer-input" type="number" inputmode="numeric" min="0" placeholder="答え" aria-label="答え">
+            <button class="step-action" id="check-answer" type="button" disabled>答えを確認</button>
+          </div>
+          <div class="feedback" id="answer-feedback" aria-live="polite"></div>
+          <div class="answer-reveal is-hidden" id="answer-reveal"></div>
+          <button class="step-action is-hidden" id="next-question" type="button">次の問題へ →</button>
+        </div>
+
+        <div class="escape-row">
+          <button class="quiet-button" id="hint-button" type="button">💡 ことばに注目</button>
+          <button class="quiet-button is-hidden" id="view-answer" type="button">答えを見る</button>
+          <span class="session-note">困ったときは、手がかりを開いて大丈夫。</span>
+        </div>
+      </section>
     </div>
 
-    <div class="result-card empty" id="result-card"></div>
-    <div class="reward-badge" id="reward-badge"></div>
-
-    <div class="btn-area">
-        <button class="btn-check" id="btn-check" onclick="checkAnswer()">📝 こたえあわせ</button>
-        <button class="btn-next"  id="btn-next"  onclick="nextQuestion()">➡️ つぎのもんだい</button>
-        <div class="btn-row">
-            <button class="btn-hint" id="btn-hint" onclick="showHint()">💡 ヒント</button>
-            <button class="btn-back" onclick="goBack()">🏠 もどる</button>
+    <section class="empty-state step-card is-hidden" id="empty-state">
+      <div class="step-head">
+        <span class="step-number">✓</span>
+        <div>
+          <h2>まちがいノートは空です</h2>
+          <p>まずはおすすめの旅で、いろいろな式をたててみよう。</p>
         </div>
-    </div>
+      </div>
+      <a class="secondary-button" href="index.html">旅の入り口へ戻る</a>
+    </section>
+  </main>
 
-</div>
+  <div class="result-overlay is-hidden" id="result-overlay" role="dialog" aria-modal="true" aria-labelledby="result-title">
+    <section class="result-panel">
+      <div class="result-art">
+        <img id="result-art-img" src="https://tt-sensei.github.io/navi-character-/assets/web/fantasy/groups/group-fantasy-celebration.webp" alt="立式の旅を終えたNAVIキャラクターたち">
+      </div>
+      <h2 id="result-title">旅を終えました</h2>
+      <p id="result-subtitle">今日の立式をふり返ろう。</p>
+      <div class="result-stats">
+        <div class="result-stat"><strong id="result-formulas">0</strong><span>式をたてた</span></div>
+        <div class="result-stat"><strong id="result-correct">0</strong><span>最後までできた</span></div>
+        <div class="result-stat"><strong id="result-viewed">0</strong><span>手がかり・答え</span></div>
+      </div>
+      <p class="result-message" id="result-message"></p>
+      <div class="result-actions">
+        <button class="primary-button" id="retry-quest" type="button">もう一度この旅へ</button>
+        <a class="secondary-button" href="index.html">旅の入り口へ</a>
+      </div>
+    </section>
+  </div>
 
-<script src="data.js"></script>
-<script>
-
-const params = new URLSearchParams(window.location.search);
-const grade  = Number(params.get('grade'));
-const mode   = params.get('mode');
-
-let currentQuestion = null;
-let isAnswered      = false;
-let hintUsed        = false;
-let calcUsed        = false;
-
-function load(key, def) {
-    const v = localStorage.getItem(key);
-    return v !== null ? JSON.parse(v) : def;
-}
-function save(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-}
-
-const modeLabels = {
-    story:        '⚔️ ストーリー',
-    train_add:    '＋ たしざん',
-    train_sub:    '－ ひきざん',
-    train_mul:    '× かけざん',
-    train_div:    '÷ わりざん',
-    train_addsub: '＋－ たし・ひき',
-    cave:         '🕳 まちがいなおし',
-};
-
-// ========================================
-// 問題ロード
-// ========================================
-function loadQuestion() {
-    isAnswered = false;
-    hintUsed   = false;
-    calcUsed   = false;
-
-    document.getElementById('btn-check').style.display       = 'block';
-    document.getElementById('btn-next').style.display        = 'none';
-    document.getElementById('btn-hint').style.display        = 'inline-flex';
-    document.getElementById('calc-toggle-btn').style.display = 'flex';
-    setResult('empty', '');
-    document.getElementById('reward-badge').style.display    = 'none';
-
-    // 計算機を閉じてリセット
-    document.getElementById('calc-wrap').classList.remove('open');
-    document.getElementById('calc-toggle-btn').textContent = '🔢 けいさんきを つかう';
-    calcReset();
-
-    // 入力リセット
-    ['f-num1','f-num2','f-ans'].forEach(id => {
-        const el = document.getElementById(id);
-        el.value = '';
-        el.style.borderColor = '';
-        el.style.background  = '';
-    });
-    document.getElementById('f-op').value           = '?';
-    document.getElementById('f-op').style.borderColor = '';
-
-    // フィルタリング
-    let filtered = questTemplates.filter(q => q.grade === grade);
-    if (mode === 'train_add')    filtered = filtered.filter(q => q.operation === 'add');
-    if (mode === 'train_sub')    filtered = filtered.filter(q => q.operation === 'sub');
-    if (mode === 'train_mul')    filtered = filtered.filter(q => q.operation === 'mul');
-    if (mode === 'train_div')    filtered = filtered.filter(q => q.operation === 'div');
-    if (mode === 'train_addsub') filtered = filtered.filter(q => q.operation === 'add' || q.operation === 'sub');
-
-    if (mode === 'cave') {
-        const mistakeIds = load('saved_mistakes', []).map(m => m.templateId);
-        filtered = filtered.filter(q => mistakeIds.includes(q.id));
-        if (filtered.length === 0) { showCaveEmpty(); return; }
-    }
-
-    if (!filtered || filtered.length === 0) {
-        document.getElementById('q-text').innerText = 'もんだいが みつかりませんでした😢';
-        return;
-    }
-
-    const template = choice(filtered);
-    currentQuestion = generateQuestion(template);
-    document.getElementById('q-text').innerText = currentQuestion.text;
-
-    setTimeout(() => document.getElementById('f-ans').focus(), 100);
-}
-
-function showCaveEmpty() {
-    document.getElementById('question-card').innerHTML = `
-        <div class="cave-empty">
-            <div class="cave-empty-icon">🎉</div>
-            <div class="cave-empty-text">まちがえた もんだいは ないよ！</div>
-            <div class="cave-empty-sub">ぜんぶ せいかいだったね！すごい！</div>
-        </div>`;
-    document.getElementById('formula-card').style.display = 'none';
-    document.getElementById('btn-check').style.display    = 'none';
-    document.getElementById('btn-hint').style.display     = 'none';
-}
-
-// ========================================
-// 計算機ロジック
-// ========================================
-let calcState = { expr: '', current: '0', hasResult: false };
-
-function calcReset() {
-    calcState = { expr: '', current: '0', hasResult: false };
-    updateCalcDisp();
-}
-function updateCalcDisp() {
-    document.getElementById('calc-disp').innerText = calcState.current;
-    document.getElementById('calc-expr').innerText = calcState.expr;
-}
-function calcNum(n) {
-    if (calcState.hasResult) { calcState.expr = ''; calcState.hasResult = false; }
-    if (calcState.current === '0') {
-        calcState.current = (n === '00') ? '0' : n;
-    } else {
-        if (calcState.current.length >= 8) return;
-        calcState.current += n;
-    }
-    updateCalcDisp();
-}
-function calcOp(op) {
-    calcState.hasResult = false;
-    calcState.expr      = calcState.current + ' ' + op + ' ';
-    calcState.current   = '0';
-    updateCalcDisp();
-}
-function calcEq() {
-    if (!calcState.expr) return;
-    const parts = calcState.expr.trim().split(' ');
-    if (parts.length < 2) return;
-    const a = parseFloat(parts[0]);
-    const op = parts[1];
-    const b = parseFloat(calcState.current);
-    let result;
-    if (op === '+') result = a + b;
-    if (op === '-') result = a - b;
-    if (op === '×') result = a * b;
-    if (op === '÷') result = b !== 0 ? a / b : 'エラー';
-    if (op === '%') result = b !== 0 ? a % b : 'エラー';
-    const rs = typeof result === 'number'
-        ? (Number.isInteger(result) ? String(result) : result.toFixed(2))
-        : result;
-    calcState.expr      = calcState.expr + calcState.current + ' =';
-    calcState.current   = rs;
-    calcState.hasResult = true;
-    updateCalcDisp();
-}
-function calcDel() {
-    if (calcState.hasResult) { calcReset(); return; }
-    calcState.current = calcState.current.length <= 1 ? '0' : calcState.current.slice(0, -1);
-    updateCalcDisp();
-}
-function calcClear() { calcReset(); }
-
-function toggleCalc() {
-    const wrap = document.getElementById('calc-wrap');
-    const btn  = document.getElementById('calc-toggle-btn');
-    const isOpen = wrap.classList.toggle('open');
-    btn.textContent = isOpen ? '🔢 けいさんきを とじる' : '🔢 けいさんきを つかう';
-    if (isOpen) calcUsed = true;  // 一度でも開いたらフラグON
-}
-
-function useCalcResult() {
-    const val = calcState.current;
-    if (val === 'エラー' || val === '0') return;
-    document.getElementById('f-ans').value = val;
-    document.getElementById('calc-wrap').classList.remove('open');
-    document.getElementById('calc-toggle-btn').textContent = '🔢 けいさんきを つかう';
-    document.getElementById('f-ans').focus();
-}
-
-// ========================================
-// 答え合わせ
-// ========================================
-function checkAnswer() {
-    if (isAnswered) return;
-
-    const uNum1 = Number(document.getElementById('f-num1').value);
-    const uOp   = document.getElementById('f-op').value;
-    const uNum2 = Number(document.getElementById('f-num2').value);
-    const uAns  = Number(document.getElementById('f-ans').value);
-    const ansField = document.getElementById('f-ans');
-
-    if (ansField.value === '') {
-        setResult('partial', '⚠️ こたえを いれてね！');
-        ansField.focus();
-        return;
-    }
-
-    const correctOp = { add:'+', sub:'-', mul:'×', div:'÷' }[currentQuestion.operation];
-
-    let isFormulaCorrect;
-    if (currentQuestion.operation === 'add' || currentQuestion.operation === 'mul') {
-        isFormulaCorrect = uOp === correctOp &&
-            ((uNum1 === currentQuestion.num1 && uNum2 === currentQuestion.num2) ||
-             (uNum1 === currentQuestion.num2 && uNum2 === currentQuestion.num1));
-    } else {
-        isFormulaCorrect = uOp === correctOp &&
-            uNum1 === currentQuestion.num1 &&
-            uNum2 === currentQuestion.num2;
-    }
-
-    const isAnsCorrect = uAns === currentQuestion.answer;
-
-    if (isFormulaCorrect && isAnsCorrect) {
-        // EXP計算：ヒントなし=2、ヒントあり=1、計算機使用=半分（切り捨て）
-        let expGain = hintUsed ? 1 : 2;
-        if (calcUsed) expGain = Math.floor(expGain / 2);
-
-        const bonusMsg = calcUsed   ? '🔢 けいさんき つかったね'
-                       : !hintUsed  ? '⭐ ヒントなし！' : '';
-        setResult('correct', `🎉 だいせいかい！ ${bonusMsg}`);
-        saveReward(expGain);
-        isAnswered = true;
-        removeMistake(currentQuestion.templateId);
-
-        document.getElementById('btn-check').style.display       = 'none';
-        document.getElementById('btn-hint').style.display        = 'none';
-        document.getElementById('calc-toggle-btn').style.display = 'none';
-        document.getElementById('calc-wrap').classList.remove('open');
-        setTimeout(() => {
-            document.getElementById('btn-next').style.display = 'block';
-        }, 1200);
-
-    } else if (isAnsCorrect && !isFormulaCorrect) {
-        setResult('partial', '⚠️ こたえは あってるけど しきが ちがうよ！');
-        highlightWrongFormula();
-        saveMistake(currentQuestion);
-
-    } else {
-        setResult('wrong',
-            '❌ もういちど かんがえてみよう！',
-            `こたえは ${currentQuestion.answer} だったよ`
-        );
-        saveMistake(currentQuestion);
-    }
-}
-
-function highlightWrongFormula() {
-    ['f-num1','f-num2'].forEach(id => {
-        document.getElementById(id).style.borderColor = '#ef9a9a';
-        document.getElementById(id).style.background  = '#ffebee';
-    });
-    document.getElementById('f-op').style.borderColor = '#ef9a9a';
-}
-
-function setResult(type, msg, sub) {
-    const card = document.getElementById('result-card');
-    card.className = `result-card ${type}`;
-    if (type === 'empty') { card.innerHTML = ''; return; }
-    card.innerHTML = `<span>${msg}</span>${sub ? `<span class="result-answer-hint">${sub}</span>` : ''}`;
-}
-
-// ========================================
-// 報酬セーブ
-// ========================================
-function saveReward(expGain) {
-    let exp     = load('saved_exp', 0);
-    let level   = load('saved_level', 1);
-    let solved  = load('saved_solved_count', 0);
-    let pending = load('saved_pending_items', 0);
-
-    exp    += expGain;
-    solved += 1;
-
-    let newLevel = level;
-    let leveledUp = false;
-    while (exp >= 10) {
-        exp -= 10;
-        newLevel++;
-        leveledUp = true;
-        if (newLevel % 5 === 0) pending++;
-    }
-
-    save('saved_exp',           exp);
-    save('saved_level',         newLevel);
-    save('saved_solved_count',  solved);
-    save('saved_pending_items', pending);
-
-    const badge = document.getElementById('reward-badge');
-    let txt = expGain > 0 ? `✨ EXP +${expGain}` : '🔢 けいさんき EXP なし';
-    if (leveledUp) txt += `　🌟 Lv.${newLevel} になった！`;
-    badge.innerText     = txt;
-    badge.style.display = 'block';
-}
-
-// ========================================
-// まちがい記録
-// ========================================
-function saveMistake(question) {
-    let mistakes = load('saved_mistakes', []);
-    if (!mistakes.find(m => m.templateId === question.templateId)) {
-        mistakes.push({ templateId: question.templateId, grade: question.grade, operation: question.operation });
-        save('saved_mistakes', mistakes);
-    }
-}
-function removeMistake(templateId) {
-    let mistakes = load('saved_mistakes', []).filter(m => m.templateId !== templateId);
-    save('saved_mistakes', mistakes);
-}
-
-// ========================================
-// ヒント
-// ========================================
-function showHint() {
-    hintUsed = true;
-    let html = currentQuestion.text;
-    currentQuestion.keywords.forEach(w => {
-        html = html.replaceAll(w,
-            `<span style="color:#e53935;font-weight:900;background:#ffcdd2;padding:1px 4px;border-radius:4px;">${w}</span>`
-        );
-    });
-    document.getElementById('q-text').innerHTML = html;
-    document.getElementById('btn-hint').style.display = 'none';
-}
-
-function nextQuestion() { loadQuestion(); }
-function goBack()       { window.location.href = 'index.html'; }
-
-document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-        if (!isAnswered) checkAnswer();
-        else if (document.getElementById('btn-next').style.display !== 'none') nextQuestion();
-    }
-});
-
-window.onload = function() {
-    document.getElementById('header-mode').innerText =
-        (modeLabels[mode] || mode) + '　' + grade + 'ねんせい';
-    if (typeof questTemplates === 'undefined' || typeof choice === 'undefined') {
-        document.getElementById('q-text').innerText = 'data.js が よみこめませんでした😢';
-        return;
-    }
-    loadQuestion();
-};
-</script>
-
+  <script type="module" src="quest.js"></script>
 </body>
 </html>
