@@ -7,6 +7,7 @@ import {
   emitEdu,
   playSound,
   recordCorrect,
+  awardRandomCollection,
   toggleSound,
   QuestionPool
 } from './common.js';
@@ -18,7 +19,16 @@ import {
   gradeMeta,
   operationMeta
 } from './data.js';
+import {
+  COLLECTION_COUNT,
+  collectionCatalog,
+  collectionImageUrl,
+  collectionLabel,
+  collectionRarityLabel,
+  collectionSeriesLabel
+} from './collection.js';
 const $ = (selector) => document.querySelector(selector);
+const SESSION_SIZE = 7;
 const params = new URLSearchParams(window.location.search);
 const grade = Number(params.get('grade')) || 1;
 const rawMode = params.get('mode') || 'mixed';
@@ -38,7 +48,7 @@ const checker = new AnswerChecker({ eventTarget: document });
 const stateAtStart = loadState();
 const mistakeIds = stateAtStart.mistakes.map((item) => item.templateId);
 const availableTemplates = getTemplatesFor(grade, mode, mistakeIds);
-const sessionTemplates = buildSessionTemplates(availableTemplates, 10);
+const sessionTemplates = buildSessionTemplates(availableTemplates, SESSION_SIZE);
 const pool = new QuestionPool(sessionTemplates, { mode: 'random' });
 
 let currentQuestion = null;
@@ -53,7 +63,9 @@ let session = {
   formulas: 0,
   correct: 0,
   viewed: 0,
-  helped: 0
+  helped: 0,
+  completed: 0,
+  collectionReward: null
 };
 
 function operatorSymbol(operation) {
@@ -83,8 +95,8 @@ function setNavi(kind, message) {
 }
 
 function updateProgress() {
-  $('#q-progress').textContent = questionNumber + ' / 10';
-  $('#q-progress-fill').style.width = Math.min(100, questionNumber * 10) + '%';
+  $('#q-progress').textContent = questionNumber + ' / ' + SESSION_SIZE;
+  $('#q-progress-fill').style.width = Math.min(100, questionNumber / SESSION_SIZE * 100) + '%';
 }
 
 function updateFormulaPreview() {
@@ -243,6 +255,7 @@ function showAnswerHelp() {
   answerRevealed = true;
   session.viewed += 1;
   session.helped += 1;
+  session.completed += 1;
   recordCorrect(currentQuestion, { hintUsed, answerHelped: true });
   const reveal = $('#answer-reveal');
   reveal.innerHTML =
@@ -254,7 +267,7 @@ function showAnswerHelp() {
   $('#answer-help-button').classList.add('is-hidden');
   $('#hint-button').classList.add('is-hidden');
   $('#next-question').classList.remove('is-hidden');
-  $('#next-question').textContent = questionNumber === 10 ? '結果を見る →' : '次の問題へ（答えサポート）';
+  $('#next-question').textContent = questionNumber === SESSION_SIZE ? '結果を見る →' : '次の問題へ（答えサポート）';
   setFeedback($('#answer-feedback'), 'info', '立式は記録したよ。答えをお願いしたので、経験値は少なめです。');
   setNavi('support', '式は自分でたてられたね。答えはNAVIに任せて大丈夫。');
   playSound('answer');
@@ -276,12 +289,13 @@ function checkAnswer() {
 
   if (isCorrect) {
     session.correct += 1;
+    session.completed += 1;
     const reward = recordCorrect(currentQuestion, { hintUsed });
     $('#check-answer').classList.add('is-hidden');
     $('#hint-button').classList.add('is-hidden');
     $('#answer-help-button').classList.add('is-hidden');
     $('#next-question').classList.remove('is-hidden');
-    $('#next-question').textContent = questionNumber === 10 ? '結果を見る →' : '次の問題へ →';
+    $('#next-question').textContent = questionNumber === SESSION_SIZE ? '結果を見る →' : '次の問題へ →';
     let message = '正解！式も答えもぴったり。立式のかけらを1つ手に入れたよ。';
     if (reward.levelUp) message += ' Lv.' + reward.state.level + 'になった！';
     setFeedback($('#answer-feedback'), 'correct', message);
@@ -299,17 +313,34 @@ function checkAnswer() {
 
 function showResult() {
   const state = loadState();
+  if (!session.collectionReward) {
+    session.collectionReward = awardRandomCollection(collectionCatalog);
+  }
+  const reward = session.collectionReward;
   $('#result-formulas').textContent = String(session.formulas);
   $('#result-correct').textContent = String(session.correct);
   $('#result-viewed').textContent = String(session.viewed);
   $('#result-subtitle').textContent = gradeInfo.label + '・' + getModeLabel(mode) + 'をふり返ろう。';
-  let message = session.correct >= 8
+  let message = session.correct >= 6
     ? 'たくさんの式の道を開いたね。文章の読み方が力になっているよ。'
     : session.formulas >= 6
       ? '式をたてるところまで、しっかり進めたね。次は答えまで挑戦しよう。'
       : '手がかりを使いながら、もう一度いろいろな文章題に挑戦してみよう。';
-  message += ' 累計 ' + state.solved + '問の立式を記録中。';
+  message += ' 7問の旅を完走したよ。累計 ' + state.solved + '問の立式を記録中。';
   $('#result-message').textContent = message;
+  const rewardBox = $('#collection-reward');
+  const badgeLarge = $('#collection-badge-large');
+  if (reward.badge) {
+    rewardBox.classList.remove('is-hidden');
+    badgeLarge.innerHTML = '<img src="' + collectionImageUrl(reward.badge) + '" alt="' + collectionLabel(reward.badge) + '">';
+    $('#collection-reward-title').textContent = 'バッジを見つけた！';
+    $('#collection-reward-copy').textContent = collectionSeriesLabel(reward.badge.series) + '・' + collectionRarityLabel(reward.badge.rarity) + 'の「' + reward.badge.item + '」をコレクションに追加しました。';
+  } else {
+    rewardBox.classList.remove('is-hidden');
+    badgeLarge.innerHTML = '<span>✓</span>';
+    $('#collection-reward-title').textContent = '150こコンプリート！';
+    $('#collection-reward-copy').textContent = 'すべてのコレクションバッジを見つけました。';
+  }
   $('#result-overlay').classList.remove('is-hidden');
   playSound('practice');
 }
@@ -321,7 +352,7 @@ function showEmpty() {
 }
 
 function nextQuestion() {
-  if (questionNumber >= 10) {
+  if (questionNumber >= SESSION_SIZE) {
     showResult();
   } else {
     loadNextQuestion();
