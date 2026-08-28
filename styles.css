@@ -1135,6 +1135,29 @@ img {
   margin-top: 0;
 }
 
+.answer-help-trigger {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px 12px;
+  border: 1px dashed #9b89ca;
+  border-radius: 10px;
+  color: #65518d;
+  background: #f7f3ff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.answer-help-trigger:hover {
+  background: #eee8ff;
+}
+
+.answer-help-trigger:focus-visible {
+  outline: 3px solid rgba(73, 111, 190, 0.4);
+  outline-offset: 2px;
+}
+
 .feedback {
   min-height: 0;
   margin-top: 11px;
