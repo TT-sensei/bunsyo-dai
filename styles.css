@@ -1868,3 +1868,17 @@ img {
   font-weight: 700;
   line-height: 1;
 }
+
+
+/* スタート画面のふりがな */
+.portal-main ruby {
+  ruby-position: over;
+  ruby-align: center;
+}
+
+.portal-main rt {
+  color: #53677d;
+  font-size: 0.52em;
+  font-weight: 700;
+  line-height: 1;
+}
