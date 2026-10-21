@@ -84,6 +84,7 @@ NAVIは、問題文や入力欄を置き換えない補助役です。キャラ�
 - quest.html：立式の旅の画面
 - quest.js：出題、立式判定、答え判定、ヒント、結果
 - data.js：文章題テンプレートと問題生成
+- furigana.js：文章題とヒントにふりがなを付ける辞書
 - collection.js：edu-assetsの150種類のコレクションバッジ一覧
 - common.js：edu-kit接続、保存、互換移行、NAVI・音の設定
 - styles.css：入口・問題・結果の共通レイアウト
