@@ -1,4 +1,4 @@
-import { addFurigana } from './furigana.js?v=20261022-9';
+import { addFurigana } from './furigana.js?v=20261022-10';
 import {
   AnswerChecker,
   EDU_EVENTS,
