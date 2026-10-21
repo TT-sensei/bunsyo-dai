@@ -389,7 +389,7 @@ export const questionTemplates = [
     typeLabel: '何倍分',
     scene: 'town',
     template: '1まい {num1}円 の入場券を、{num2}まい 買いました。代金は ぜんぶで なん円？',
-    num1Range: [3, 9],
+    num1Range: [120, 450],
     num2Range: [2, 9],
     keywords: ['1まい', 'まい', '代金'],
     formulaText: '1まい分の値段 × 枚数',
