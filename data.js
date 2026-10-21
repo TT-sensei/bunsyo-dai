@@ -205,10 +205,10 @@ export const questionTemplates = [
     typeLabel: 'あわせる',
     scene: 'town',
     template: '道具を買うために {num1}円 持っています。さらに {num2}円 もらいました。お金は 合わせて 何円ですか？',
-    num1Range: [20, 80],
-    num2Range: [10, 80],
-    keywords: ['もらいました', 'ぜんぶで'],
-    formulaText: 'もっていたお金 ＋ もらったお金',
+    num1Range: [20, 60],
+    num2Range: [10, 30],
+    keywords: ['もらいました', '合わせて'],
+    formulaText: '持っていたお金 ＋ もらったお金',
     reason: 'お金がふえたので、二つの金額を合わせます。'
   }),
   t({
@@ -259,7 +259,7 @@ export const questionTemplates = [
     template: '青いリボンは {num1}cm、赤いリボンは {num2}cm です。青いリボンは 赤いリボンより なんcm ながい？',
     num1Range: [30, 90],
     num2Range: [10, 60],
-    keywords: ['なんm', 'ながい'],
+    keywords: ['何cm', '長い'],
     formulaText: '青いリボンの長さ − 赤いリボンの長さ',
     reason: '二つのリボンの長さをくらべて、ちがいを求めます。'
   }),
