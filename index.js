@@ -9,7 +9,7 @@ import {
 import {
   gradeMeta,
   operationMeta
-} from './data.js';
+} from './data.js?v=20261022-2';
 import {
   COLLECTION_COUNT,
   collectionCatalog,
