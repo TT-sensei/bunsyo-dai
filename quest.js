@@ -1,3 +1,4 @@
+import { addFurigana } from './furigana.js';
 import {
   AnswerChecker,
   EDU_EVENTS,
@@ -153,7 +154,7 @@ function showQuestion(question) {
   resetAnswerState();
   $('#stage-pill').textContent = '第' + questionNumber + '問';
   $('#type-pill').textContent = question.typeLabel;
-  $('#q-text').textContent = question.text;
+  $('#q-text').innerHTML = addFurigana(question.text);
   const background = FANTASY.backgrounds[question.scene] || FANTASY.backgrounds.forest;
   $('#scene-backdrop').style.backgroundImage = 'url("' + background + '")';
   setNavi('start', '文章の中の数の関係を見つけよう。');
