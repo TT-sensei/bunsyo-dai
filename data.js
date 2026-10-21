@@ -477,6 +477,195 @@ export const questionTemplates = [
     formulaText: '全部の冊数 ÷ 人数',
     reason: '本の全部の数を、人数で同じ数ずつ分けます。'
   })
+
+  // 生活の場面を広げる追加問題
+  // 1年生：学校や身近な生活の数
+  t({
+    id: 'g1-add-library',
+    grade: 1,
+    operation: 'add',
+    typeLabel: 'あわせる',
+    scene: 'town',
+    template: '図書コーナーに えほんが {num1}さつ、ずかんが {num2}さつ あります。本は あわせて なんさつ？',
+    unit: 'さつ',
+    num1Range: [1, 9],
+    num2Range: [1, 9],
+    keywords: ['あわせて', 'なんさつ'],
+    formulaText: 'えほんの数 ＋ ずかんの数',
+    reason: 'えほんとずかんの数を合わせて、本の全部の数を求めます。'
+  }),
+  t({
+    id: 'g1-add-playground',
+    grade: 1,
+    operation: 'add',
+    typeLabel: 'ふえる',
+    scene: 'grassland',
+    template: '校庭で子どもが {num1}人 あそんでいます。あとから {num2}人 来ました。今は なん人？',
+    unit: '人',
+    num1Range: [1, 9],
+    num2Range: [1, 9],
+    keywords: ['あとから', '来ました', '今は'],
+    formulaText: 'はじめにいた人数 ＋ 来た人数',
+    reason: 'あとから来た人数を、はじめにいた人数に合わせます。'
+  }),
+  t({
+    id: 'g1-sub-pencil',
+    grade: 1,
+    operation: 'sub',
+    typeLabel: 'つかう',
+    scene: 'town',
+    template: 'えんぴつを {num1}本 もっています。{num2}本 つかいました。のこりは なん本？',
+    unit: '本',
+    num1Range: [5, 15],
+    num2Range: [1, 9],
+    keywords: ['つかいました', 'のこり'],
+    formulaText: 'もっていた本数 − つかった本数',
+    reason: 'つかった本数だけ、手元にある本数がへります。'
+  }),
+  t({
+    id: 'g1-sub-stickers',
+    grade: 1,
+    operation: 'sub',
+    typeLabel: 'くらべる',
+    scene: 'forest',
+    template: 'ゆうさんは シールを {num1}まい、はるさんは {num2}まい もっています。ゆうさんのほうが なんまい おおい？',
+    unit: 'まい',
+    num1Range: [5, 15],
+    num2Range: [1, 9],
+    keywords: ['なんまい', 'おおい'],
+    formulaText: 'ゆうさんの枚数 − はるさんの枚数',
+    reason: '二人の枚数をくらべて、ちがいを求めます。'
+  }),
+
+  // 2年生：九九や2けたの数を生活場面で使う
+  t({
+    id: 'g2-add-event',
+    grade: 2,
+    operation: 'add',
+    typeLabel: 'あわせる',
+    scene: 'town',
+    template: '学校のおまつりに、午前は {num1}人、午後は {num2}人 来ました。合わせて なん人？',
+    unit: '人',
+    num1Range: [20, 80],
+    num2Range: [10, 80],
+    keywords: ['午前', '午後', '合わせて'],
+    formulaText: '午前の人数 ＋ 午後の人数',
+    reason: '午前と午後の人数を合わせて、来た人の合計を求めます。'
+  }),
+  t({
+    id: 'g2-sub-library',
+    grade: 2,
+    operation: 'sub',
+    typeLabel: 'のこり',
+    scene: 'ruins',
+    template: '図書室に本が {num1}さつ あります。そのうち {num2}さつを かし出しました。図書室に のこっている本は なんさつ？',
+    unit: 'さつ',
+    num1Range: [40, 100],
+    num2Range: [10, 40],
+    keywords: ['かし出しました', 'のこっている'],
+    formulaText: 'はじめにあった冊数 − かし出した冊数',
+    reason: 'かし出した本を、はじめにあった本の数からひきます。'
+  }),
+  t({
+    id: 'g2-mul-snacks',
+    grade: 2,
+    operation: 'mul',
+    typeLabel: '同じ数ずつ',
+    scene: 'town',
+    template: 'おやつを 1人に {num1}こずつ くばります。{num2}人に くばると、ぜんぶで なんこ いりますか？',
+    unit: 'こ',
+    num1Range: [2, 9],
+    num2Range: [2, 9],
+    keywords: ['1人に', 'ずつ', 'ぜんぶで'],
+    formulaText: '1人分の数 × 人数',
+    reason: '同じ数ずつ配るまとまりが人数分あるので、かけ算です。'
+  }),
+  t({
+    id: 'g2-mul-desks',
+    grade: 2,
+    operation: 'mul',
+    typeLabel: '同じ数ずつ',
+    scene: 'grassland',
+    template: 'つくえを {num1}台ずつ、{num2}列に ならべます。つくえは ぜんぶで 何台？',
+    unit: '台',
+    num1Range: [2, 9],
+    num2Range: [2, 9],
+    keywords: ['ずつ', '列', 'ぜんぶで'],
+    formulaText: '1列の台数 × 列数',
+    reason: 'どの列にも同じ台数をならべるので、かけ算で求められます。'
+  }),
+
+  // 3年生：九九を使う場面と、わり算の意味を広げる
+  t({
+    id: 'g3-add-festival',
+    grade: 3,
+    operation: 'add',
+    typeLabel: 'あわせる',
+    scene: 'town',
+    template: '地域のおまつりに、土曜日は {num1}人、日曜日は {num2}人 来ました。2日間で なん人 来ましたか？',
+    unit: '人',
+    num1Range: [120, 800],
+    num2Range: [100, 600],
+    keywords: ['土曜日', '日曜日', '2日間'],
+    formulaText: '土曜日の人数 ＋ 日曜日の人数',
+    reason: '2日間の人数を合わせて、合計を求めます。'
+  }),
+  t({
+    id: 'g3-sub-budget',
+    grade: 3,
+    operation: 'sub',
+    typeLabel: 'つかった金額',
+    scene: 'town',
+    template: '{num1}円 もっています。{num2}円のノートを買いました。のこりは なん円ですか？',
+    unit: '円',
+    num1Range: [300, 900],
+    num2Range: [100, 500],
+    keywords: ['買いました', 'のこり'],
+    formulaText: 'もっていた金額 − ノートの代金',
+    reason: '買い物に使った金額を、もとの金額からひきます。'
+  }),
+  t({
+    id: 'g3-mul-entry',
+    grade: 3,
+    operation: 'mul',
+    typeLabel: '同じ値段',
+    scene: 'town',
+    template: '入場券は 1まい {num1}円です。{num2}まい買うと、代金は ぜんぶで なん円？',
+    unit: '円',
+    num1Range: [120, 450],
+    num2Range: [2, 9],
+    keywords: ['1まい', 'まい買う', '代金'],
+    formulaText: '1まい分の値段 × 枚数',
+    reason: '同じ値段の入場券を、買う枚数分だけ求めます。'
+  }),
+  t({
+    id: 'g3-div-pencils',
+    grade: 3,
+    operation: 'div',
+    typeLabel: '同じ数に分ける',
+    scene: 'town',
+    template: 'えんぴつが {num1}本 あります。{num2}人に 同じ数ずつ配ると、1人分は 何本？',
+    unit: '本',
+    num2Range: [2, 9],
+    answerRange: [2, 9],
+    keywords: ['同じ数ずつ', '1人分'],
+    formulaText: 'えんぴつの全部の本数 ÷ 人数',
+    reason: '全部の本数を人数で同じ数ずつ分けるので、わり算です。'
+  }),
+  t({
+    id: 'g3-div-packs',
+    grade: 3,
+    operation: 'div',
+    typeLabel: 'いくつ分',
+    scene: 'grassland',
+    template: 'クッキーが {num1}まい あります。1ふくろに {num2}まいずつ 入れると、何ふくろできますか？',
+    unit: 'まい',
+    num2Range: [2, 9],
+    answerRange: [2, 9],
+    keywords: ['1ふくろに', 'ずつ', '何ふくろ'],
+    formulaText: 'クッキーの全部の枚数 ÷ 1ふくろ分の枚数',
+    reason: '全部の枚数の中に、1ふくろ分がいくつあるかを求めます。'
+  }),
 ];
 
 let questionSerial = 0;
