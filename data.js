@@ -476,7 +476,7 @@ export const questionTemplates = [
     keywords: ['同じ数ずつ', '1人分'],
     formulaText: '全部の冊数 ÷ 人数',
     reason: '本の全部の数を、人数で同じ数ずつ分けます。'
-  })
+  }),
 
   // 生活の場面を広げる追加問題
   // 1年生：学校や身近な生活の数
