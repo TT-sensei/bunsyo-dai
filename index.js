@@ -31,7 +31,7 @@ function applyStartScreenFurigana() {
     '.journey-purpose span', '.journey-purpose strong', '.journey-purpose small',
     '.hero-lead', '.flow-step', '.progress-title', '.progress-number small',
     '#exp-label', '.section-heading h2', '.section-heading p',
-    '.grade-card strong', '.grade-card p', '.route-panel-head h2',
+    '.grade-card strong', '.grade-card p', '.grade-check', '.route-panel-head h2',
     '.route-panel-head p', '.route-card strong', '.route-card small',
     '.route-selected-note', '#start-quest', '.journey-note strong',
     '.journey-note span', '.collection-kicker', '.collection-summary-title',
@@ -40,8 +40,9 @@ function applyStartScreenFurigana() {
     '.portal-footer > span', '#reset-progress'
   ];
   document.querySelectorAll(selectors.join(',')).forEach((element) => {
-    const originalText = element.textContent;
+    const originalText = element.dataset.furiganaSource ?? element.textContent;
     if (!originalText || !/[一-龥々]/.test(originalText)) return;
+    element.dataset.furiganaSource = originalText;
     element.innerHTML = addFurigana(originalText);
   });
 }
