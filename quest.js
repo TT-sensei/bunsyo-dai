@@ -242,9 +242,9 @@ function showHint() {
     '<strong>ことばに注目</strong>' +
     '<div>次の言葉から、数の関係を考えてみよう。</div>' +
     '<div class="hint-keywords">' +
-      currentQuestion.keywords.map((word) => '<span>「' + word + '」</span>').join('') +
+      currentQuestion.keywords.map((word) => '<span>「' + addFurigana(word) + '」</span>').join('') +
     '</div>' +
-    '<div style="margin-top:7px;">' + currentQuestion.reason + '</div>';
+    '<div style="margin-top:7px;">' + addFurigana(currentQuestion.reason) + '</div>';
   box.classList.remove('is-hidden');
   $('#hint-button').classList.add('is-hidden');
   setNavi('thinking', '大事な言葉を見つけると、式の形が見えてくるよ。');
