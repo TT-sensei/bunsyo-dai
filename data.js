@@ -269,12 +269,12 @@ export const questionTemplates = [
     operation: 'mul',
     typeLabel: '同じ数ずつ',
     scene: 'forest',
-    template: '1人に {num1}まいずつ 地図をくばります。{num2}人 います。地図は ぜんぶで なんまい？',
+    template: '1人に {num1}まいずつ シールを配ります。{num2}人います。シールは全部で何まいですか？',
     num1Range: [2, 9],
     num2Range: [2, 9],
-    keywords: ['1人に', 'ずつ', 'ぜんぶで'],
-    formulaText: '1人分の数 × 人数',
-    reason: '同じ数ずつ、いくつ分かあるので、かけ算です。'
+    keywords: ['1人に', 'ずつ', '全部で'],
+    formulaText: '1人分の枚数 × 人数',
+    reason: '1人に配る枚数が人数分あるので、かけ算です。'
   }),
   t({
     id: 'g2-mul-rows',
@@ -362,12 +362,12 @@ export const questionTemplates = [
     operation: 'sub',
     typeLabel: 'くらべる',
     scene: 'sky-island',
-    template: '高い塔は {num1}m、低い塔は {num2}mです。高さのちがいは何mですか？',
+    template: '高い山は {num1}m、低い山は {num2}mです。高さのちがいは何mですか？',
     num1Range: [300, 900],
     num2Range: [100, 700],
     keywords: ['高さのちがい'],
-    formulaText: '高い方の高さ − 低い方の高さ',
-    reason: '二つの高さの差をくらべるので、ひき算です。'
+    formulaText: '高い山の高さ − 低い山の高さ',
+    reason: '二つの山の高さのちがいを求めるので、ひき算です。'
   }),
   t({
     id: 'g3-mul-boxes',
@@ -428,7 +428,7 @@ export const questionTemplates = [
     typeLabel: '同じ数に分ける',
     scene: 'grassland',
     template: '{item}が {num1}{unit} あります。{num2}人で 同じ数ずつ分けます。1人分は なん{unit}？',
-    items: ['クッキー', 'ビー玉', '宝石'],
+    items: ['ビー玉', '宝石', '小さな石'],
     num2Range: [2, 9],
     answerRange: [2, 9],
     keywords: ['同じ数ずつ', '1人分'],
