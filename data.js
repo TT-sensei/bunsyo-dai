@@ -65,8 +65,8 @@ export const questionTemplates = [
     typeLabel: 'あわせる',
     scene: 'grassland',
     template: '{item1}が {num1}{unit}、{item2}が {num2}{unit} あります。あわせて なん{unit}？',
-    items1: ['赤い花のかざり', '青い石', '小さな木の実'],
-    items2: ['白い花のかざり', '白い石', '大きな木の実'],
+    items1: ['赤いビー玉', '青いおはじき', '黄色い木の実'],
+    items2: ['青いビー玉', '赤いおはじき', '茶色い木の実'],
     num1Range: [1, 9],
     num2Range: [1, 9],
     keywords: ['あわせて'],
@@ -94,7 +94,7 @@ export const questionTemplates = [
     operation: 'add',
     typeLabel: 'みつける',
     scene: 'riverbank',
-    template: '川のそばで石を {num1}{unit} 見つけました。そのあと、石を {num2}{unit} 見つけました。合わせて石を何{unit}見つけましたか？',
+    template: '川のそばで石を {num1}{unit} 見つけました。そのあと、石を {num2}{unit} 見つけました。見つけた石は合わせて何{unit}ですか？',
     num1Range: [1, 9],
     num2Range: [1, 9],
     keywords: ['そのあと', '合わせて'],
@@ -107,12 +107,12 @@ export const questionTemplates = [
     operation: 'add',
     typeLabel: 'そろえる',
     scene: 'town',
-    template: 'ぼうけんに使う道具を {num1}{unit} 持っています。さらに {num2}{unit} 用意しました。道具は全部で何{unit}ありますか？',
+    template: 'たからさがしに使う道具を {num1}{unit} 持っています。友だちが道具を {num2}{unit} 持ってきました。道具は合わせて何{unit}ありますか？',
     num1Range: [1, 9],
     num2Range: [1, 9],
-    keywords: ['さらに', '全部で'],
-    formulaText: 'もっている数 ＋ じゅんびした数',
-    reason: '道具がふえたので、たし算で全部を求めます。'
+    keywords: ['持ってきました', '合わせて'],
+    formulaText: '持っている道具の数 ＋ 友だちが持ってきた道具の数',
+    reason: '友だちが道具を持ってきたので、二人分の数を合わせます。'
   }),
   t({
     id: 'g1-sub-decrease',
@@ -120,13 +120,13 @@ export const questionTemplates = [
     operation: 'sub',
     typeLabel: 'のこり',
     scene: 'forest',
-    template: '{item}が {num1}{unit} あります。{num2}{unit} つかいました。のこりは なん{unit}？',
-    items: ['木の実', 'どんぐり', '星のかけら', 'ビー玉'],
+    template: '{item}が {num1}{unit} あります。{num2}{unit} 食べました。残りは何{unit}ですか？',
+    items: ['あめ', 'クッキー', 'グミ', 'ビスケット'],
     num1Range: [5, 15],
     num2Range: [1, 9],
-    keywords: ['つかいました', 'のこり'],
-    formulaText: 'はじめの数 − つかった数',
-    reason: 'はじめにあった数から、つかった数をひきます。'
+    keywords: ['食べました', '残り'],
+    formulaText: 'はじめの数 − 食べた数',
+    reason: 'はじめにあった数から、食べた数をひきます。'
   }),
   t({
     id: 'g1-sub-give',
@@ -134,11 +134,11 @@ export const questionTemplates = [
     operation: 'sub',
     typeLabel: 'わたす',
     scene: 'grassland',
-    template: '{item}を {num1}{unit} もっています。ともだちに {num2}{unit} あげました。のこりは なん{unit}？',
+    template: '{item}を {num1}{unit} 持っています。友だちに、そのうち {num2}{unit} あげました。残りは何{unit}ですか？',
     items: ['おはじき', 'ビー玉', '木の実'],
     num1Range: [5, 15],
     num2Range: [1, 9],
-    keywords: ['あげました', 'のこり'],
+    keywords: ['そのうち', 'あげました', '残り'],
     formulaText: 'もっていた数 − あげた数',
     reason: 'わたした分だけ、手元の数がへります。'
   }),
@@ -174,12 +174,12 @@ export const questionTemplates = [
     operation: 'sub',
     typeLabel: 'つかう',
     scene: 'cave',
-    template: '宝箱に {num1}まい のカードがありました。{num2}まい つかいました。のこりは なんまい？',
+    template: '宝箱にカードが {num1}まい 入っていました。{num2}まい取り出しました。残りは何まいですか？',
     num1Range: [5, 15],
     num2Range: [1, 9],
-    keywords: ['つかいました', 'のこり'],
-    formulaText: 'はじめの枚数 − つかった枚数',
-    reason: 'つかった分だけ、残りの枚数がへります。'
+    keywords: ['取り出しました', '残り'],
+    formulaText: 'はじめの枚数 − 取り出した枚数',
+    reason: '取り出した枚数を、はじめにあった枚数からひきます。'
   }),
 
   // 2年生：大きな数・かけ算
@@ -206,7 +206,9 @@ export const questionTemplates = [
     scene: 'town',
     template: '文房具を買うために {num1}円 持っています。さらに {num2}円 もらいました。合わせて何円になりましたか？',
     num1Range: [20, 60],
+    num1Step: 10,
     num2Range: [10, 30],
+    num2Step: 10,
     keywords: ['もらいました', '合わせて'],
     formulaText: '持っていたお金 ＋ もらったお金',
     reason: 'お金がふえたので、二つの金額を合わせます。'
@@ -245,7 +247,9 @@ export const questionTemplates = [
     scene: 'town',
     template: 'おこづかいを {num1}円 持っていました。{num2}円の文房具を買いました。のこりは何円ですか？',
     num1Range: [40, 100],
+    num1Step: 10,
     num2Range: [10, 60],
+    num2Step: 10,
     keywords: ['買いました', 'のこり'],
     formulaText: 'もっていた金額 − 使った金額',
     reason: '買い物で使った金額を、もとの金額からひきます。'
@@ -282,10 +286,10 @@ export const questionTemplates = [
     operation: 'mul',
     typeLabel: 'ならべる',
     scene: 'grassland',
-    template: '旗を 1れつに {num1}本ずつ 立てます。{num2}れつ あります。旗は ぜんぶで なん本？',
+    template: '旗を1列に {num1}本ずつ立てます。{num2}列に立てると、旗は全部で何本ですか？',
     num1Range: [2, 9],
     num2Range: [2, 9],
-    keywords: ['1れつに', 'ずつ', 'れつ'],
+    keywords: ['1列に', 'ずつ', '列'],
     formulaText: '1れつ分の本数 × れつ数',
     reason: '同じ本数のまとまりが、れつ数分あります。'
   }),
@@ -308,10 +312,10 @@ export const questionTemplates = [
     operation: 'mul',
     typeLabel: '毎日同じ',
     scene: 'riverbank',
-    template: '毎日 {num1}こずつ 石をひろいます。{num2}日 ひろうと、ぜんぶで なんこ？',
+    template: '毎日、石を {num1}こずつ拾います。{num2}日間では、石を全部で何こ拾いますか？',
     num1Range: [2, 9],
     num2Range: [2, 9],
-    keywords: ['毎日', 'ずつ', '日'],
+    keywords: ['毎日', 'ずつ', '日間'],
     formulaText: '1日分の数 × 日数',
     reason: '同じ数を何日分か集めるので、かけ算です。'
   }),
@@ -323,10 +327,10 @@ export const questionTemplates = [
     operation: 'add',
     typeLabel: 'あわせる',
     scene: 'grassland',
-    template: '午前に {num1}人、午後に {num2}人が見学に来ました。合わせて何人来ましたか？',
+    template: '博物館には午前に {num1}人、午後に {num2}人が見学に来ました。1日で合わせて何人が見学に来ましたか？',
     num1Range: [100, 800],
     num2Range: [100, 600],
-    keywords: ['午前に', '午後に', '合わせて'],
+    keywords: ['午前に', '午後に', '1日で'],
     formulaText: '午前の人数 ＋ 午後の人数',
     reason: '午前と午後の人数を合わせます。'
   }),
@@ -336,7 +340,7 @@ export const questionTemplates = [
     operation: 'sub',
     typeLabel: 'のこり',
     scene: 'ruins',
-    template: '遺跡の見学に {num1}人来ました。そのうち {num2}人が帰りました。見学を続けている人は何人ですか？',
+    template: '博物館に {num1}人が見学に来ました。そのうち {num2}人が帰りました。まだ見学している人は何人ですか？',
     num1Range: [200, 900],
     num2Range: [100, 500],
     keywords: ['そのうち', '帰りました', '何人'],
@@ -349,10 +353,10 @@ export const questionTemplates = [
     operation: 'add',
     typeLabel: 'つなぐ',
     scene: 'riverbank',
-    template: '森の道を {num1}m、川の道を {num2}m 歩きました。歩いた道のりは ぜんぶで なんm？',
+    template: 'ハイキングで森の道を {num1}m、川のそばの道を {num2}m 歩きました。歩いた道のりは合わせて何mですか？',
     num1Range: [100, 800],
     num2Range: [100, 600],
-    keywords: ['森の道', '川の道', 'ぜんぶで'],
+    keywords: ['ハイキング', '森の道', '川のそば'],
     formulaText: '森の道のり ＋ 川の道のり',
     reason: '二つの道のりをつなげて、全部の道のりを求めます。'
   }),
@@ -390,6 +394,7 @@ export const questionTemplates = [
     scene: 'town',
     template: '入場券は1枚 {num1}円です。{num2}枚買うと、代金は全部で何円ですか？',
     num1Range: [120, 450],
+    num1Step: 10,
     num2Range: [2, 9],
     keywords: ['1枚', '枚買う', '代金'],
     formulaText: '1枚分の値段 × 枚数',
@@ -401,10 +406,10 @@ export const questionTemplates = [
     operation: 'mul',
     typeLabel: 'ならべる',
     scene: 'forest',
-    template: '薬草のなえを {num1}列に ならべます。1列に {num2}本ずつ あると、なえは ぜんぶで 何本？',
+    template: '薬草の苗を {num1}列に並べます。1列に {num2}本ずつ植えると、苗は全部で何本ですか？',
     num1Range: [2, 9],
     num2Range: [3, 9],
-    keywords: ['列に', '1列', 'ずつ'],
+    keywords: ['列に', '1列に', 'ずつ'],
     formulaText: '列数 × 1列分の本数',
     reason: '同じ本数の列が、列数分あるので、かけ算です。'
   }),
@@ -427,8 +432,8 @@ export const questionTemplates = [
     operation: 'div',
     typeLabel: '同じ数に分ける',
     scene: 'grassland',
-    template: '{item}が {num1}{unit} あります。{num2}人で 同じ数ずつ分けます。1人分は なん{unit}？',
-    items: ['ビー玉', '宝石', '小さな石'],
+    template: '{item}が {num1}{unit} あります。{num2}人で同じ数ずつ分けると、1人分は何{unit}ですか？',
+    items: ['ビー玉', '小さな石', 'クリスタル'],
     num2Range: [2, 9],
     answerRange: [2, 9],
     keywords: ['同じ数ずつ', '1人分'],
@@ -616,11 +621,13 @@ export const questionTemplates = [
     operation: 'sub',
     typeLabel: 'つかった金額',
     scene: 'town',
-    template: '{num1}円 持っています。{num2}円のノートを買いました。お金は あと何円 のこっていますか？',
+    template: 'おこづかいを {num1}円 持っています。{num2}円のノートを買いました。残りは何円ですか？',
     unit: '円',
     num1Range: [300, 900],
+    num1Step: 10,
     num2Range: [100, 500],
-    keywords: ['買いました', 'のこっています'],
+    num2Step: 10,
+    keywords: ['買いました', '残り'],
     formulaText: 'もっていた金額 − ノートの代金',
     reason: '買い物に使った金額を、もとの金額からひきます。'
   }),
@@ -670,10 +677,12 @@ export const questionTemplates = [
 
 let questionSerial = 0;
 
-const randomInt = (range) => {
+const randomInt = (range, step = 1) => {
   const min = Number(range[0]);
   const max = Number(range[1]);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  const interval = Math.max(1, Number(step) || 1);
+  const count = Math.floor((max - min) / interval) + 1;
+  return min + Math.floor(Math.random() * count) * interval;
 };
 
 const pick = (values) => values[Math.floor(Math.random() * values.length)];
@@ -701,12 +710,12 @@ function makeNumbers(template) {
   let answer;
 
   if (template.operation === 'div') {
-    num2 = randomInt(template.num2Range);
-    answer = randomInt(template.answerRange || [2, 9]);
+    num2 = randomInt(template.num2Range, template.num2Step || 1);
+    answer = randomInt(template.answerRange || [2, 9], template.answerStep || 1);
     num1 = num2 * answer;
   } else {
-    num1 = randomInt(template.num1Range);
-    num2 = randomInt(template.num2Range);
+    num1 = randomInt(template.num1Range, template.num1Step || 1);
+    num2 = randomInt(template.num2Range, template.num2Step || 1);
     if (template.operation === 'sub') {
       let guard = 0;
       while (num1 <= num2 && guard < 50) {
