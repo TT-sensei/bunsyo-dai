@@ -743,8 +743,22 @@ function makeNumbers(template) {
         guard += 1;
       }
       if (num1 <= num2) {
-        num1 = Math.max(template.num1Range[0], Math.min(template.num1Range[1], num2 + 1));
-        if (num1 <= num2) num2 = Math.max(template.num2Range[0], num1 - 1);
+        // 予備処理でも、10円単位などの刻み幅を守って引き算が成立する組を作る。
+        const min1 = Number(template.num1Range[0]);
+        const max1 = Number(template.num1Range[1]);
+        const step1 = Math.max(1, Number(template.num1Step) || 1);
+        const min2 = Number(template.num2Range[0]);
+        const max2 = Number(template.num2Range[1]);
+        const step2 = Math.max(1, Number(template.num2Step) || 1);
+        const nextNum1 = min1 + Math.ceil((num2 + 1 - min1) / step1) * step1;
+
+        if (nextNum1 <= max1) {
+          num1 = nextNum1;
+        } else {
+          num1 = min1 + Math.floor((max1 - min1) / step1) * step1;
+          const maxValidNum2 = Math.min(max2, num1 - 1);
+          num2 = min2 + Math.floor((maxValidNum2 - min2) / step2) * step2;
+        }
       }
     }
     if (template.operation === 'add') answer = num1 + num2;
