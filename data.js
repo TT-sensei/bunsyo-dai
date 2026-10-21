@@ -648,7 +648,7 @@ export const questionTemplates = [
     unit: '本',
     num2Range: [2, 9],
     answerRange: [2, 9],
-    keywords: ['同じ数ずつ', '1人分'],
+    keywords: ['同じ数ずつ', '1人に'],
     formulaText: 'えんぴつの全部の本数 ÷ 人数',
     reason: '全部の本数を人数で同じ数ずつ分けるので、わり算です。'
   }),
