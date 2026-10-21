@@ -1855,3 +1855,16 @@ img {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* 文章題のふりがな */
+.question-text ruby {
+  ruby-position: over;
+  ruby-align: center;
+}
+
+.question-text rt {
+  color: #53677d;
+  font-size: 0.52em;
+  font-weight: 700;
+  line-height: 1;
+}
