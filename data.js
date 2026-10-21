@@ -216,7 +216,7 @@ export const questionTemplates = [
     num2Range: [10, 30],
     num2Step: 10,
     keywords: ['家の人から', 'もらいました', '合わせて'],
-    formulaText: '持っていたお金 ＋ もらったお金',
+    formulaText: 'さいふに入っていた金額 ＋ もらった金額',
     reason: 'お金がふえたので、二つの金額を合わせます。'
   }),
   t({
@@ -372,7 +372,7 @@ export const questionTemplates = [
     num1Range: [100, 800],
     num2Range: [100, 600],
     keywords: ['ハイキング', '森の道', '川のそば'],
-    formulaText: '森の道のり ＋ 川の道のり',
+    formulaText: '森の道のり ＋ 川のそばの道のり',
     reason: '二つの道のりをつなげて、全部の道のりを求めます。'
   }),
   t({
@@ -587,8 +587,8 @@ export const questionTemplates = [
     num1Range: [40, 100],
     num2Range: [10, 40],
     keywords: ['貸し出しました', 'のこっている'],
-    formulaText: 'はじめにあった冊数 − かし出した冊数',
-    reason: 'かし出した本を、はじめにあった本の数からひきます。'
+    formulaText: 'はじめにあった本の数 − 貸し出した本の数',
+    reason: '貸し出した本の数を、はじめにあった本の数からひきます。'
   }),
   t({
     id: 'g2-mul-snacks',
@@ -609,7 +609,7 @@ export const questionTemplates = [
     grade: 2,
     operation: 'mul',
     typeLabel: '同じ数ずつ',
-    scene: 'grassland',
+    scene: 'town',
     template: 'つくえを 1列に {num1}台ずつ、{num2}列に ならべます。つくえは 全部で 何台ですか？',
     unit: '台',
     num1Range: [2, 9],
