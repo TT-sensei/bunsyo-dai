@@ -79,6 +79,15 @@ function updateSoundButton() {
   soundButton.textContent = current.soundOn === false ? '🔇 音 OFF' : '🔊 音 ON';
 }
 
+function configureOperators() {
+  const grid = $('.operator-grid');
+  grid.style.gridTemplateColumns = 'repeat(' + gradeInfo.operations.length + ', minmax(0, 1fr))';
+  document.querySelectorAll('.operator-button').forEach((button) => {
+    button.hidden = !gradeInfo.operations.includes(button.dataset.operation);
+    button.disabled = button.hidden;
+  });
+}
+
 function setNavi(kind, message) {
   const sources = {
     start: FANTASY.characters.sora,
@@ -411,6 +420,7 @@ $('#result-art-img').addEventListener('error', () => {
 
 $('#quest-title').textContent = gradeInfo.label + '｜' + getModeLabel(mode);
 updateSoundButton();
+configureOperators();
 
 if (!availableTemplates.length) {
   showEmpty();
