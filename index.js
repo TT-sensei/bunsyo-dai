@@ -35,7 +35,7 @@ function applyStartScreenFurigana() {
     '.route-panel-head p', '.route-card strong', '.route-card small',
     '.route-selected-note', '#start-quest', '.journey-note strong',
     '.journey-note span', '.collection-kicker', '.collection-summary-title',
-    '.collection-summary-note', '.collection-description', '.portal-footer > span',
+    '.collection-summary-note', '.collection-description', '.collection-badge-card strong', '.collection-badge-card small',\n    '.progress-title', '.portal-footer > span',
     '#reset-progress'
   ];
   document.querySelectorAll(selectors.join(',')).forEach((element) => {
