@@ -1,3 +1,4 @@
+import { addFurigana } from './furigana.js?v=20261022-5';
 import {
   FANTASY,
   loadState,
@@ -24,6 +25,26 @@ let selectedGrade = 1;
 let selectedMode = 'mixed';
 let state = loadState();
 
+function applyStartScreenFurigana() {
+  const selectors = [
+    '.brand-title', '.brand-subtitle', '.eyebrow', '.hero-title',
+    '.journey-purpose span', '.journey-purpose strong', '.journey-purpose small',
+    '.hero-lead', '.flow-step', '.progress-title', '.progress-number small',
+    '#exp-label', '.section-heading h2', '.section-heading p',
+    '.grade-card strong', '.grade-card p', '.route-panel-head h2',
+    '.route-panel-head p', '.route-card strong', '.route-card small',
+    '.route-selected-note', '#start-quest', '.journey-note strong',
+    '.journey-note span', '.collection-kicker', '.collection-summary-title',
+    '.collection-summary-note', '.collection-description', '.portal-footer > span',
+    '#reset-progress'
+  ];
+  document.querySelectorAll(selectors.join(',')).forEach((element) => {
+    const originalText = element.textContent;
+    if (!originalText || !/[\\u3400-\\u9FFF々]/.test(originalText)) return;
+    element.innerHTML = addFurigana(originalText);
+  });
+}
+
 function renderProgress() {
   state = loadState();
   $('#solved-count').textContent = String(state.solved);
@@ -31,6 +52,7 @@ function renderProgress() {
   $('#exp-label').textContent = '次のレベルまで ' + String(Math.max(0, 10 - state.exp));
   $('#exp-fill').style.width = Math.min(100, state.exp * 10) + '%';
   renderCollection();
+  applyStartScreenFurigana();
   const soundButton = $('#sound-toggle');
   soundButton.textContent = state.soundOn === false ? '🔇 音 OFF' : '🔊 音 ON';
 }
@@ -71,6 +93,7 @@ function renderGrades() {
       '</button>'
     );
   }).join('');
+  applyStartScreenFurigana();
 }
 
 function routeCard(mode, label, sub, icon, color, selected) {
@@ -185,3 +208,4 @@ document.querySelectorAll('.journey-note img').forEach(attachImageFallback);
 renderProgress();
 renderGrades();
 renderRoutes();
+applyStartScreenFurigana();
