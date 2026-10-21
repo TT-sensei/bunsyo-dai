@@ -719,8 +719,8 @@ function makeNumbers(template) {
     if (template.operation === 'sub') {
       let guard = 0;
       while (num1 <= num2 && guard < 50) {
-        num1 = randomInt(template.num1Range);
-        num2 = randomInt(template.num2Range);
+        num1 = randomInt(template.num1Range, template.num1Step || 1);
+        num2 = randomInt(template.num2Range, template.num2Step || 1);
         guard += 1;
       }
       if (num1 <= num2) {
