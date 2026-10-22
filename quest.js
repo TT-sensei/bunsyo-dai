@@ -19,7 +19,7 @@ import {
   getTemplatesFor,
   gradeMeta,
   operationMeta
-} from './data.js?v=20261022-6';
+} from './data.js?v=20261022-7';
 import {
   COLLECTION_COUNT,
   collectionCatalog,
