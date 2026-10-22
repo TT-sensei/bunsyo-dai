@@ -109,12 +109,12 @@ export const questionTemplates = [
     typeLabel: 'そろえる',
     unit: 'まい',
     scene: 'town',
-    template: 'ぼうけんでつかうカードを {num1}まい もっています。ともだちがカードを {num2}まい もってきました。カードは あわせて なんまい ありますか？',
+    template: 'カードを {num1}まい もっています。ともだちが {num2}まい もってきました。カードは あわせて なんまい ありますか？',
     num1Range: [1, 9],
     num2Range: [1, 9],
     keywords: ['もってきました', 'あわせて'],
     formulaText: 'もっているカードの数 ＋ ともだちがもってきたカードの数',
-    reason: 'ともだちがカードを持ってきたので、二人分の数をあわせます。'
+    reason: 'もっていたカードに、ともだちが持ってきたカードを合わせます。'
   }),
   t({
     id: 'g1-sub-decrease',
@@ -1030,6 +1030,8 @@ export const questionTemplates = [
     template: '町の募金活動で、午前に {num1}円、午後に {num2}円 集まりました。集まったお金は全部で何円ですか？',
     num1Range: [200, 800],
     num2Range: [100, 600],
+    num1Step: 10,
+    num2Step: 10,
     keywords: ['午前', '午後', '全部で'],
     formulaText: '午前に集まった金額 ＋ 午後に集まった金額',
     reason: '午前と午後に集まったお金を合わせます。'
@@ -1071,6 +1073,7 @@ export const questionTemplates = [
     unit: 'm',
     template: 'ランニングコースは1周 {num1}m です。{num2}周すると、何m 走ることになりますか？',
     num1Range: [120, 900],
+    num1Step: 10,
     num2Range: [2, 9],
     keywords: ['1周', '周すると', '何m'],
     formulaText: '1周の長さ × 周の数',
