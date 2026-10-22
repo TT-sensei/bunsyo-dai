@@ -983,7 +983,7 @@ export const questionTemplates = [
     typeLabel: '何週間分',
     scene: 'town',
     unit: '回',
-    template: '1週間に {num1}回 練習します。{num2}週間では、全部で何回練習しますか？',
+    template: 'なわとびの練習を1週間に {num1}回 します。{num2}週間では、全部で何回練習しますか？',
     num1Range: [2, 9],
     num2Range: [2, 9],
     keywords: ['1週間に', '週間では', '何回'],
