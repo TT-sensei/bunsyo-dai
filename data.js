@@ -986,7 +986,7 @@ export const questionTemplates = [
     template: '1週間に {num1}回 練習します。{num2}週間では、全部で何回練習しますか？',
     num1Range: [2, 9],
     num2Range: [2, 9],
-    keywords: ['1週間に', '何回', '何週間'],
+    keywords: ['1週間に', '週間では', '何回'],
     formulaText: '1週間の回数 × 週の数',
     reason: '同じ回数の練習を、何週間分か行います。'
   }),
