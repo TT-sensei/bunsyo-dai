@@ -1876,6 +1876,21 @@ img {
   ruby-align: center;
 }
 
+/* ヘッダー内のタイトルにも同じ読みやすさを適用 */
+.portal-header ruby,
+.quest-header ruby {
+  ruby-position: over;
+  ruby-align: center;
+}
+
+.portal-header rt,
+.quest-header rt {
+  color: #53677d;
+  font-size: 0.45em;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .portal-main rt {
   color: #53677d;
   font-size: 0.52em;
