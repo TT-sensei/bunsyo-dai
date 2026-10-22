@@ -231,7 +231,12 @@ export function addFurigana(value) {
   let index = 0;
 
   while (index < text.length) {
-    const match = dictionaryEntries.find(([word]) => text.startsWith(word, index));
+    const match = dictionaryEntries.find(([word]) => {
+      if (!text.startsWith(word, index)) return false;
+      // 数字が続くとき、たとえば「72人」の途中で「2人」を誤って当てない。
+      if (/^\\d/.test(word) && index > 0 && /\\d/.test(text[index - 1])) return false;
+      return true;
+    });
     if (match) {
       const [word, reading] = match;
       output += '<ruby>' + escapeHtml(word) + '<rt>' + escapeHtml(reading) + '</rt></ruby>';
