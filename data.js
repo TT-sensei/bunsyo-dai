@@ -1021,18 +1021,18 @@ export const questionTemplates = [
     reason: '2日間に集めたキャップの数を合わせます。'
   }),
   t({
-    id: 'g3-add-books',
+    id: 'g3-add-donation',
     grade: 3,
     operation: 'add',
     typeLabel: 'あわせる',
     scene: 'town',
-    unit: 'さつ',
-    template: '本を集める活動で、1組から {num1}さつ、2組から {num2}さつ 集まりました。本は全部で何さつですか？',
+    unit: '円',
+    template: '町の募金活動で、午前に {num1}円、午後に {num2}円 集まりました。集まったお金は全部で何円ですか？',
     num1Range: [200, 800],
     num2Range: [100, 600],
-    keywords: ['1組から', '2組から', '全部で'],
-    formulaText: '1組から集まった冊数 ＋ 2組から集まった冊数',
-    reason: '二つの組から集まった本の数を合わせます。'
+    keywords: ['午前', '午後', '全部で'],
+    formulaText: '午前に集まった金額 ＋ 午後に集まった金額',
+    reason: '午前と午後に集まったお金を合わせます。'
   }),
   t({
     id: 'g3-sub-road',
