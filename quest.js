@@ -1,4 +1,4 @@
-import { addFurigana } from './furigana.js?v=20261022-10';
+import { addFurigana } from './furigana.js?v=20261022-11';
 import {
   AnswerChecker,
   EDU_EVENTS,
@@ -19,7 +19,7 @@ import {
   getTemplatesFor,
   gradeMeta,
   operationMeta
-} from './data.js?v=20261022-2';
+} from './data.js?v=20261022-3';
 import {
   COLLECTION_COUNT,
   collectionCatalog,
