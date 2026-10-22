@@ -848,20 +848,6 @@ export const questionTemplates = [
     formulaText: 'はじめのつみ木 − 箱にしまったつみ木',
     reason: '箱にしまった数を、はじめにあった数からひきます。'
   }),
-  t({
-    id: 'g1-sub-books',
-    grade: 1,
-    operation: 'sub',
-    typeLabel: 'へる',
-    scene: 'town',
-    unit: 'さつ',
-    template: '本を {num1}さつ かりています。{num2}さつ 返すと、かりている本は 何さつですか？',
-    num1Range: [10, 19],
-    num2Range: [1, 9],
-    keywords: ['返すと', 'かりている本', '何さつ'],
-    formulaText: 'かりていた本の数 − 返した本の数',
-    reason: '返した本の数だけ、かりている本がへります。'
-  }),
 
   // 2年生：2けたの数と九九を生活の場面で使う
   t({
